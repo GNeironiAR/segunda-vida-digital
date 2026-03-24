@@ -280,6 +280,44 @@
       border: 1px solid #3e3a2e;
     }
 
+    .badge-ensamblado {
+      background: #1e1e2a;
+      color: #8080b8;
+      border: 1px solid #2e2e3e;
+    }
+
+    /* --- Assembly chips --- */
+    .chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+      min-height: 32px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: #22222a;
+      border: 1px solid #2e2d33;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #b8a882;
+    }
+
+    .chip .chip-remove {
+      cursor: pointer;
+      color: #5a5750;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .chip .chip-remove:hover {
+      color: #c88282;
+    }
+
     /* --- Search --- */
     .search-bar {
       margin-bottom: 12px;
@@ -567,6 +605,7 @@
   <!-- Tabs -->
   <div class="tabs">
     <button class="active" onclick="showTab('ingreso')">+ Ingreso</button>
+    <button onclick="showTab('ensamblar')">Ensamblar</button>
     <button onclick="showTab('entrega')">Entrega</button>
     <button onclick="showTab('inventario')">Inventario</button>
     <button onclick="showTab('donantes')">Donantes</button>
@@ -619,6 +658,69 @@
         <button class="btn btn-primary" onclick="registrarEquipo()">Registrar equipo</button>
         <button class="btn" onclick="showTab('donantes'); showNuevoDonante()">+ Nuevo donante</button>
       </div>
+    </div>
+  </div>
+
+  <!-- TAB: Ensamblar -->
+  <div class="section" id="sec-ensamblar">
+    <div class="form-card">
+      <h3>Armar equipo informático</h3>
+      <p style="font-size:13px;color:#706b63;margin-bottom:14px">
+        Seleccioná componentes disponibles para armar un equipo completo. Los componentes individuales quedarán vinculados al nuevo equipo ensamblado.
+      </p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre del equipo</label>
+          <input type="text" id="ens-nombre" placeholder="Ej: PC Escuela - Intel i3 + 4GB RAM">
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="ens-tipo">
+            <option value="PC de escritorio">PC de escritorio</option>
+            <option value="Notebook">Notebook</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Agregar componente</label>
+          <select id="ens-componente" onchange="agregarComponente()">
+            <option value="">— Seleccionar componente disponible —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha de ensamblado</label>
+          <input type="date" id="ens-fecha">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:11px;color:#5a5750;text-transform:uppercase;letter-spacing:0.05em">Componentes seleccionados</label>
+        <div class="chip-list" id="ens-chips"></div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="form-group">
+          <label>Notas</label>
+          <textarea id="ens-notas" placeholder="Ej: Se limpió todo, se instaló Linux Mint 21, funciona OK"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="registrarEnsamblado()">Ensamblar equipo</button>
+      </div>
+    </div>
+
+    <!-- Ensamblados recientes -->
+    <div class="form-card">
+      <h3>Equipos ensamblados</h3>
+      <div class="table-wrap">
+        <table id="tabla-ensamblados">
+          <thead>
+            <tr><th>UID</th><th>Nombre</th><th>Componentes</th><th>Fecha</th><th>Estado</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="empty" id="empty-ensamblados">No hay equipos ensamblados</div>
     </div>
   </div>
 
@@ -824,6 +926,8 @@
   let donantes = [];
   let instituciones = [];
   let entregas = [];
+  let ensamblados = [];
+  let selectedComponents = []; // UIDs for current assembly
 
   // ============================================================
   // PERSISTENCE (Firebase + localStorage fallback)
@@ -857,6 +961,11 @@
       if (snap.exists()) snap.forEach(c => { const v = c.val(); v._key = c.key; entregas.push(v); });
       onDataChange();
     });
+    db.ref('ensamblados').on('value', snap => {
+      ensamblados = [];
+      if (snap.exists()) snap.forEach(c => { const v = c.val(); v._key = c.key; ensamblados.push(v); });
+      onDataChange();
+    });
   }
 
   function loadLocal() {
@@ -864,6 +973,7 @@
     try { donantes = JSON.parse(localStorage.getItem('svd_donantes') || '[]'); } catch { donantes = []; }
     try { instituciones = JSON.parse(localStorage.getItem('svd_instituciones') || '[]'); } catch { instituciones = []; }
     try { entregas = JSON.parse(localStorage.getItem('svd_entregas') || '[]'); } catch { entregas = []; }
+    try { ensamblados = JSON.parse(localStorage.getItem('svd_ensamblados') || '[]'); } catch { ensamblados = []; }
     onDataChange();
   }
 
@@ -872,6 +982,7 @@
     localStorage.setItem('svd_donantes', JSON.stringify(donantes));
     localStorage.setItem('svd_instituciones', JSON.stringify(instituciones));
     localStorage.setItem('svd_entregas', JSON.stringify(entregas));
+    localStorage.setItem('svd_ensamblados', JSON.stringify(ensamblados));
   }
 
   function pushData(collection, entry) {
@@ -882,6 +993,7 @@
       else if (collection === 'donantes') donantes.push(entry);
       else if (collection === 'instituciones') instituciones.push(entry);
       else if (collection === 'entregas') entregas.push(entry);
+      else if (collection === 'ensamblados') ensamblados.push(entry);
       saveLocal();
       onDataChange();
     }
@@ -920,7 +1032,7 @@
     document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
 
-    const idx = ['ingreso','entrega','inventario','donantes','instituciones','trazabilidad'].indexOf(name);
+    const idx = ['ingreso','ensamblar','entrega','inventario','donantes','instituciones','trazabilidad'].indexOf(name);
     if (idx >= 0) document.querySelectorAll('.tabs button')[idx].classList.add('active');
     document.getElementById('sec-' + name).classList.add('active');
   }
@@ -1022,22 +1134,115 @@
   }
 
   // ============================================================
+  // ASSEMBLY FUNCTIONS
+  // ============================================================
+  function agregarComponente() {
+    const sel = document.getElementById('ens-componente');
+    const uid = sel.value;
+    if (!uid || selectedComponents.includes(uid)) { sel.value = ''; return; }
+    selectedComponents.push(uid);
+    sel.value = '';
+    renderChips();
+    renderSelects();
+  }
+
+  function quitarComponente(uid) {
+    selectedComponents = selectedComponents.filter(u => u !== uid);
+    renderChips();
+    renderSelects();
+  }
+
+  function renderChips() {
+    const container = document.getElementById('ens-chips');
+    if (!selectedComponents.length) {
+      container.innerHTML = '<span style="color:#4a4640;font-size:12px;font-style:italic">Ningún componente seleccionado</span>';
+      return;
+    }
+    container.innerHTML = selectedComponents.map(uid => {
+      const eq = equipos.find(e => e.uid === uid);
+      const label = eq ? `${uid} — ${eq.tipo} ${eq.marca}` : uid;
+      return `<div class="chip"><span class="uid" style="font-size:11px">${esc(label)}</span><span class="chip-remove" onclick="quitarComponente('${uid}')">&times;</span></div>`;
+    }).join('');
+  }
+
+  function registrarEnsamblado() {
+    const nombre = document.getElementById('ens-nombre').value.trim();
+    if (!nombre) return toast('Ingresá un nombre para el equipo', true);
+    if (selectedComponents.length < 2) return toast('Seleccioná al menos 2 componentes', true);
+    const fecha = document.getElementById('ens-fecha').value;
+    if (!fecha) return toast('Ingresá la fecha de ensamblado', true);
+
+    const uid = nextUID();
+    // Collect donors from components
+    const donantesComponentes = [...new Set(selectedComponents.map(u => {
+      const eq = equipos.find(e => e.uid === u);
+      return eq ? eq.donante : '';
+    }).filter(Boolean))];
+
+    const entry = {
+      uid,
+      tipo: document.getElementById('ens-tipo').value,
+      nombre,
+      componentes: selectedComponents.slice(),
+      donantes: donantesComponentes,
+      fecha,
+      notas: document.getElementById('ens-notas').value.trim(),
+      fechaCreacion: new Date().toISOString()
+    };
+
+    pushData('ensamblados', entry);
+
+    // Also create an equipment entry so it appears in delivery & inventory
+    const eqEntry = {
+      uid,
+      tipo: document.getElementById('ens-tipo').value,
+      marca: nombre,
+      donante: donantesComponentes.join(', '),
+      fecha,
+      descripcion: 'Ensamblado con: ' + selectedComponents.join(', ') + (document.getElementById('ens-notas').value.trim() ? '. ' + document.getElementById('ens-notas').value.trim() : ''),
+      estado: 'disponible',
+      esEnsamblado: true,
+      componentes: selectedComponents.slice(),
+      fechaCreacion: new Date().toISOString()
+    };
+
+    pushData('equipos', eqEntry);
+
+    // Mark components as "ensamblado"
+    for (const compUID of selectedComponents) {
+      const eq = equipos.find(e => e.uid === compUID);
+      if (eq) {
+        const key = eq._key || eq.uid;
+        updateData('equipos', key, { estado: 'ensamblado', ensambladoEn: uid });
+      }
+    }
+
+    selectedComponents = [];
+    document.getElementById('ens-nombre').value = '';
+    document.getElementById('ens-notas').value = '';
+    renderChips();
+    toast('Equipo ensamblado: ' + uid + ' (' + nombre + ')');
+  }
+
+  // ============================================================
   // RENDER
   // ============================================================
   function onDataChange() {
     renderStats();
     renderSelects();
     renderInventario();
+    renderEnsamblados();
     renderDonantes();
     renderInstituciones();
     renderEntregas();
     renderTrazabilidad();
+    renderChips();
   }
 
   function renderStats() {
     const disponibles = equipos.filter(e => e.estado === 'disponible').length;
     const entregados = equipos.filter(e => e.estado === 'entregado').length;
-    document.getElementById('stat-equipos').textContent = equipos.length;
+    document.getElementById('stat-equipos').textContent = equipos.filter(e => e.estado !== 'ensamblado').length;
     document.getElementById('stat-disponibles').textContent = disponibles;
     document.getElementById('stat-entregados').textContent = entregados;
     document.getElementById('stat-donantes').textContent = donantes.length;
@@ -1054,7 +1259,7 @@
     }
     if (donVal) donSel.value = donVal;
 
-    // Equipment select in delivery form (only available)
+    // Equipment select in delivery form (only available, not raw components)
     const eqSel = document.getElementById('ent-equipo');
     const eqVal = eqSel.value;
     eqSel.innerHTML = '<option value="">— Seleccionar equipo disponible —</option>';
@@ -1064,6 +1269,17 @@
       }
     }
     if (eqVal) eqSel.value = eqVal;
+
+    // Components select in assembly form (only available, not already selected)
+    const compSel = document.getElementById('ens-componente');
+    const compVal = compSel.value;
+    compSel.innerHTML = '<option value="">— Seleccionar componente disponible —</option>';
+    for (const e of equipos) {
+      if (e.estado === 'disponible' && !e.esEnsamblado && !selectedComponents.includes(e.uid)) {
+        compSel.innerHTML += `<option value="${esc(e.uid)}">${esc(e.uid)} — ${esc(e.tipo)} ${esc(e.marca)} (${esc(e.donante)})</option>`;
+      }
+    }
+    if (compVal) compSel.value = compVal;
 
     // Institutions select in delivery form
     const instSel = document.getElementById('ent-institucion');
@@ -1087,14 +1303,36 @@
     document.getElementById('empty-inventario').style.display = filtered.length ? 'none' : 'block';
 
     for (const e of filtered.slice().reverse()) {
-      const badgeClass = e.estado === 'disponible' ? 'badge-disponible' : 'badge-entregado';
-      const badgeText = e.estado === 'disponible' ? 'Disponible' : 'Entregado';
+      const badgeClass = e.estado === 'disponible' ? 'badge-disponible' : e.estado === 'ensamblado' ? 'badge-ensamblado' : 'badge-entregado';
+      const badgeText = e.estado === 'disponible' ? 'Disponible' : e.estado === 'ensamblado' ? 'Ensamblado → ' + (e.ensambladoEn || '') : 'Entregado';
+      const tipoLabel = e.esEnsamblado ? e.tipo + ' (ensamblado)' : e.tipo;
       tbody.innerHTML += `<tr>
         <td class="uid">${esc(e.uid)}</td>
-        <td>${esc(e.tipo)}</td>
+        <td>${esc(tipoLabel)}</td>
         <td>${esc(e.marca)}</td>
         <td>${esc(e.donante)}</td>
         <td>${esc(e.fecha)}</td>
+        <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+      </tr>`;
+    }
+  }
+
+  function renderEnsamblados() {
+    const tbody = document.querySelector('#tabla-ensamblados tbody');
+    tbody.innerHTML = '';
+    document.getElementById('empty-ensamblados').style.display = ensamblados.length ? 'none' : 'block';
+
+    for (const a of ensamblados.slice().reverse()) {
+      const eq = equipos.find(e => e.uid === a.uid);
+      const estado = eq ? eq.estado : 'disponible';
+      const badgeClass = estado === 'disponible' ? 'badge-disponible' : 'badge-entregado';
+      const badgeText = estado === 'disponible' ? 'Disponible' : 'Entregado';
+      const comps = (a.componentes || []).join(', ');
+      tbody.innerHTML += `<tr>
+        <td class="uid">${esc(a.uid)}</td>
+        <td>${esc(a.nombre)}</td>
+        <td style="font-size:11px">${esc(comps)}</td>
+        <td>${esc(a.fecha)}</td>
         <td><span class="badge ${badgeClass}">${badgeText}</span></td>
       </tr>`;
     }
@@ -1160,9 +1398,11 @@
       return (e.uid + ' ' + e.tipo + ' ' + e.marca + ' ' + e.donante + ' ' + instName).toLowerCase().includes(search);
     });
 
-    document.getElementById('empty-trazabilidad').style.display = filtered.length ? 'none' : 'block';
+    // Don't show items that were consumed into assemblies
+    const visibleItems = filtered.filter(e => e.estado !== 'ensamblado');
+    document.getElementById('empty-trazabilidad').style.display = visibleItems.length ? 'none' : 'block';
 
-    for (const e of filtered.slice().reverse()) {
+    for (const e of visibleItems.slice().reverse()) {
       const entrega = entregas.find(en => en.equipoUID === e.uid);
       const badgeClass = e.estado === 'disponible' ? 'badge-disponible' : 'badge-entregado';
       const badgeText = e.estado === 'disponible' ? 'Disponible' : 'Entregado';
@@ -1172,8 +1412,30 @@
           <span class="uid">${esc(e.uid)}</span>
           <span class="badge ${badgeClass}">${badgeText}</span>
         </div>
-        <div style="font-size:13px;color:#706b63;margin-bottom:8px">${esc(e.tipo)} — ${esc(e.marca)}</div>
-        <div class="trace-flow">
+        <div style="font-size:13px;color:#706b63;margin-bottom:8px">${esc(e.tipo)}${e.esEnsamblado ? ' (ensamblado)' : ''} — ${esc(e.marca)}</div>
+        <div class="trace-flow">`;
+
+      // If assembled, show each component's donor
+      if (e.esEnsamblado && e.componentes) {
+        for (let ci = 0; ci < e.componentes.length; ci++) {
+          const compUID = e.componentes[ci];
+          const comp = equipos.find(x => x.uid === compUID);
+          if (ci > 0) html += `<span class="trace-arrow" style="width:100%;text-align:center;font-size:12px;color:#4a4640"></span>`;
+          html += `
+          <div class="trace-node donor" style="font-size:12px">
+            <div style="font-size:10px;color:#5a5750">Donante: ${comp ? esc(comp.donante) : '?'}</div>
+            <div class="uid" style="font-size:11px">${esc(compUID)}</div>
+            <div style="font-size:10px;color:#4a4640">${comp ? esc(comp.tipo) + ' ' + esc(comp.marca) : ''}</div>
+          </div>`;
+        }
+        html += `
+          <span class="trace-arrow">→</span>
+          <div class="trace-node equip" style="border-left:3px solid #8080b8">
+            <div style="font-size:11px;color:#5a5750">Ensamblado</div>
+            <div class="uid">${esc(e.uid)}</div>
+          </div>`;
+      } else {
+        html += `
           <div class="trace-node donor">
             <div style="font-size:11px;color:#5a5750">Donante</div>
             <div>${esc(e.donante)}</div>
@@ -1184,6 +1446,7 @@
             <div style="font-size:11px;color:#5a5750">Equipo</div>
             <div class="uid">${esc(e.uid)}</div>
           </div>`;
+      }
 
       if (entrega) {
         html += `
@@ -1297,6 +1560,7 @@
     document.getElementById('user-email').textContent = email;
     document.getElementById('eq-fecha').value = new Date().toISOString().split('T')[0];
     document.getElementById('ent-fecha').value = new Date().toISOString().split('T')[0];
+    document.getElementById('ens-fecha').value = new Date().toISOString().split('T')[0];
     loadData();
   }
 
