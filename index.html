@@ -551,6 +551,104 @@
 
     .app-content { display: none; }
 
+    /* --- Row actions --- */
+    .row-actions {
+      display: flex;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .btn-mini {
+      background: #22222a;
+      border: 1px solid #2e2d33;
+      border-radius: 4px;
+      color: #a09888;
+      padding: 3px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: all 0.2s;
+    }
+
+    .btn-mini:hover {
+      background: #2a2930;
+      color: #d4c9a8;
+      border-color: #504a42;
+    }
+
+    .btn-mini.danger:hover {
+      border-color: #5a3a3a;
+      color: #c88282;
+    }
+
+    /* --- Modal --- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+
+    .modal-overlay.visible { display: flex; }
+
+    .modal {
+      background: #1a1a1f;
+      border: 1px solid #3a3840;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .modal h3 {
+      font-size: 14px;
+      font-weight: 400;
+      color: #a09888;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .modal .modal-uid {
+      font-family: 'Courier New', monospace;
+      color: #b8a882;
+      font-size: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2e2d33;
+    }
+
+    .modal .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #2e2d33;
+    }
+
+    .btn-danger {
+      background: #2a1e1e;
+      border: 1px solid #5a3a3a;
+      color: #c88282;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-danger:hover {
+      background: #3a2626;
+      color: #e09292;
+    }
+
     /* --- Responsive --- */
     @media (max-width: 600px) {
       .form-row { flex-direction: column; }
@@ -781,7 +879,7 @@
     <div class="table-wrap">
       <table id="tabla-inventario">
         <thead>
-          <tr><th>UID</th><th>Tipo</th><th>Marca/Modelo</th><th>Donante</th><th>Fecha ingreso</th><th>Estado</th></tr>
+          <tr><th>UID</th><th>Tipo</th><th>Marca/Modelo</th><th>Donante</th><th>Fecha ingreso</th><th>Estado</th><th></th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -818,7 +916,7 @@
       <div class="table-wrap">
         <table id="tabla-donantes">
           <thead>
-            <tr><th>Nombre</th><th>Contacto</th><th>Equipos donados</th><th>Notas</th></tr>
+            <tr><th>Nombre</th><th>Contacto</th><th>Equipos donados</th><th>Notas</th><th></th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -867,7 +965,7 @@
       <div class="table-wrap">
         <table id="tabla-instituciones">
           <thead>
-            <tr><th>Nombre</th><th>Tipo</th><th>Ubicación</th><th>Contacto</th><th>Equipos recibidos</th></tr>
+            <tr><th>Nombre</th><th>Tipo</th><th>Ubicación</th><th>Contacto</th><th>Equipos recibidos</th><th></th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -887,6 +985,22 @@
 
 </div>
 
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3 id="modal-title">Editar</h3>
+    <div class="modal-uid" id="modal-uid"></div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-danger" onclick="deleteFromModal()">Eliminar</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveModal()">Guardar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Toast -->
@@ -1003,14 +1117,32 @@
     if (firebaseReady) {
       return db.ref(collection + '/' + key).update(updates);
     } else {
-      const arr = collection === 'equipos' ? equipos :
-                  collection === 'donantes' ? donantes :
-                  collection === 'instituciones' ? instituciones : entregas;
+      const arr = collectionArr(collection);
       const item = arr.find(i => i.uid === key || i._key === key);
       if (item) Object.assign(item, updates);
       saveLocal();
       onDataChange();
     }
+  }
+
+  function deleteData(collection, key) {
+    if (firebaseReady) {
+      return db.ref(collection + '/' + key).remove();
+    } else {
+      const arr = collectionArr(collection);
+      const idx = arr.findIndex(i => i.uid === key || i._key === key);
+      if (idx >= 0) arr.splice(idx, 1);
+      saveLocal();
+      onDataChange();
+    }
+  }
+
+  function collectionArr(collection) {
+    return collection === 'equipos' ? equipos :
+           collection === 'donantes' ? donantes :
+           collection === 'instituciones' ? instituciones :
+           collection === 'entregas' ? entregas :
+           collection === 'ensamblados' ? ensamblados : [];
   }
 
   // ============================================================
@@ -1306,6 +1438,7 @@
       const badgeClass = e.estado === 'disponible' ? 'badge-disponible' : e.estado === 'ensamblado' ? 'badge-ensamblado' : 'badge-entregado';
       const badgeText = e.estado === 'disponible' ? 'Disponible' : e.estado === 'ensamblado' ? 'Ensamblado → ' + (e.ensambladoEn || '') : 'Entregado';
       const tipoLabel = e.esEnsamblado ? e.tipo + ' (ensamblado)' : e.tipo;
+      const key = e._key || e.uid;
       tbody.innerHTML += `<tr>
         <td class="uid">${esc(e.uid)}</td>
         <td>${esc(tipoLabel)}</td>
@@ -1313,6 +1446,7 @@
         <td>${esc(e.donante)}</td>
         <td>${esc(e.fecha)}</td>
         <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+        <td class="row-actions"><button class="btn-mini" onclick="openModal('equipos','${esc(key)}')">Editar</button></td>
       </tr>`;
     }
   }
@@ -1345,11 +1479,13 @@
 
     for (const d of donantes.slice().reverse()) {
       const count = equipos.filter(e => e.donante === d.nombre).length;
+      const key = d._key || d.nombre;
       tbody.innerHTML += `<tr>
         <td>${esc(d.nombre)}</td>
         <td>${esc(d.contacto)}</td>
         <td>${count}</td>
         <td>${esc(d.notas)}</td>
+        <td class="row-actions"><button class="btn-mini" onclick="openModal('donantes','${esc(key)}')">Editar</button></td>
       </tr>`;
     }
   }
@@ -1361,12 +1497,14 @@
 
     for (const i of instituciones.slice().reverse()) {
       const count = entregas.filter(e => e.institucion === i.nombre).length;
+      const key = i._key || i.nombre;
       tbody.innerHTML += `<tr>
         <td>${esc(i.nombre)}</td>
         <td>${esc(i.tipo)}</td>
         <td>${esc(i.ubicacion)}</td>
         <td>${esc(i.contacto)}</td>
         <td>${count}</td>
+        <td class="row-actions"><button class="btn-mini" onclick="openModal('instituciones','${esc(key)}')">Editar</button></td>
       </tr>`;
     }
   }
@@ -1477,6 +1615,244 @@
       container.innerHTML += html;
     }
   }
+
+  // ============================================================
+  // EDIT / DELETE (modal)
+  // ============================================================
+  let modalState = null; // { type, key, uid }
+
+  function openModal(type, key) {
+    const arr = collectionArr(type);
+    const item = arr.find(i => (i._key || i.uid) === key);
+    if (!item) return;
+    modalState = { type, key, uid: item.uid || item.nombre };
+
+    const titleEl = document.getElementById('modal-title');
+    const uidEl = document.getElementById('modal-uid');
+    const body = document.getElementById('modal-body');
+
+    if (type === 'equipos') {
+      titleEl.textContent = 'Editar equipo';
+      uidEl.textContent = item.uid + (item.esEnsamblado ? ' (ensamblado)' : '');
+      const tipos = ['Notebook','PC de escritorio','Monitor','Teclado','Mouse','Impresora','Componente','Otro'];
+      const donantesOpts = donantes.map(d => `<option value="${esc(d.nombre)}" ${d.nombre === item.donante ? 'selected' : ''}>${esc(d.nombre)}</option>`).join('');
+      body.innerHTML = `
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="m-tipo">${tipos.map(t => `<option value="${t}" ${t === item.tipo ? 'selected' : ''}>${t}</option>`).join('')}</select>
+          </div>
+          <div class="form-group">
+            <label>Marca / Modelo</label>
+            <input type="text" id="m-marca" value="${esc(item.marca || '')}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Donante</label>
+            <select id="m-donante"><option value="">— Seleccionar —</option>${donantesOpts}</select>
+          </div>
+          <div class="form-group">
+            <label>Fecha de ingreso</label>
+            <input type="date" id="m-fecha" value="${esc(item.fecha || '')}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Descripción / Estado</label>
+            <textarea id="m-desc">${esc(item.descripcion || '')}</textarea>
+          </div>
+        </div>
+      `;
+      if (item.esEnsamblado) {
+        const donFlat = (item.donante || '');
+        document.getElementById('m-donante').innerHTML = `<option value="${esc(donFlat)}" selected>${esc(donFlat)} (ensamblado)</option>`;
+        document.getElementById('m-donante').disabled = true;
+      }
+    } else if (type === 'donantes') {
+      titleEl.textContent = 'Editar donante';
+      uidEl.textContent = item.nombre;
+      body.innerHTML = `
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="m-nombre" value="${esc(item.nombre || '')}">
+          </div>
+          <div class="form-group">
+            <label>Contacto</label>
+            <input type="text" id="m-contacto" value="${esc(item.contacto || '')}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Notas</label>
+            <input type="text" id="m-notas" value="${esc(item.notas || '')}">
+          </div>
+        </div>
+      `;
+    } else if (type === 'instituciones') {
+      titleEl.textContent = 'Editar institución';
+      uidEl.textContent = item.nombre;
+      const tipos = ['Escuela','ONG','Comedor','Biblioteca','Centro comunitario','Otro'];
+      body.innerHTML = `
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="m-nombre" value="${esc(item.nombre || '')}">
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="m-tipo">${tipos.map(t => `<option value="${t}" ${t === item.tipo ? 'selected' : ''}>${t}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ubicación</label>
+            <input type="text" id="m-ubicacion" value="${esc(item.ubicacion || '')}">
+          </div>
+          <div class="form-group">
+            <label>Contacto</label>
+            <input type="text" id="m-contacto" value="${esc(item.contacto || '')}">
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('edit-modal').classList.add('visible');
+  }
+
+  function closeModal() {
+    document.getElementById('edit-modal').classList.remove('visible');
+    modalState = null;
+  }
+
+  function saveModal() {
+    if (!modalState) return;
+    const { type, key } = modalState;
+    const arr = collectionArr(type);
+    const item = arr.find(i => (i._key || i.uid) === key);
+    if (!item) return;
+
+    if (type === 'equipos') {
+      const updates = {
+        tipo: document.getElementById('m-tipo').value,
+        marca: document.getElementById('m-marca').value.trim(),
+        fecha: document.getElementById('m-fecha').value,
+        descripcion: document.getElementById('m-desc').value.trim()
+      };
+      if (!item.esEnsamblado) {
+        updates.donante = document.getElementById('m-donante').value;
+      }
+      updateData('equipos', key, updates);
+      toast('Equipo actualizado: ' + item.uid);
+    } else if (type === 'donantes') {
+      const nuevoNombre = document.getElementById('m-nombre').value.trim();
+      if (!nuevoNombre) return toast('El nombre no puede estar vacío', true);
+      const oldNombre = item.nombre;
+      const updates = {
+        nombre: nuevoNombre,
+        contacto: document.getElementById('m-contacto').value.trim(),
+        notas: document.getElementById('m-notas').value.trim()
+      };
+      updateData('donantes', key, updates);
+      // Propagate rename to equipos
+      if (nuevoNombre !== oldNombre) {
+        for (const eq of equipos) {
+          if (eq.donante === oldNombre) {
+            updateData('equipos', eq._key || eq.uid, { donante: nuevoNombre });
+          }
+        }
+      }
+      toast('Donante actualizado');
+    } else if (type === 'instituciones') {
+      const nuevoNombre = document.getElementById('m-nombre').value.trim();
+      if (!nuevoNombre) return toast('El nombre no puede estar vacío', true);
+      const oldNombre = item.nombre;
+      const updates = {
+        nombre: nuevoNombre,
+        tipo: document.getElementById('m-tipo').value,
+        ubicacion: document.getElementById('m-ubicacion').value.trim(),
+        contacto: document.getElementById('m-contacto').value.trim()
+      };
+      updateData('instituciones', key, updates);
+      // Propagate rename to entregas
+      if (nuevoNombre !== oldNombre) {
+        for (const en of entregas) {
+          if (en.institucion === oldNombre) {
+            updateData('entregas', en._key || en.uid, { institucion: nuevoNombre });
+          }
+        }
+      }
+      toast('Institución actualizada');
+    }
+
+    closeModal();
+  }
+
+  function deleteFromModal() {
+    if (!modalState) return;
+    const { type, key } = modalState;
+    const arr = collectionArr(type);
+    const item = arr.find(i => (i._key || i.uid) === key);
+    if (!item) return;
+
+    let msg = '';
+    if (type === 'equipos') {
+      msg = `¿Eliminar el equipo ${item.uid}?`;
+      if (item.estado === 'entregado') msg += '\n\nATENCIÓN: este equipo ya fue entregado. También se eliminará el registro de la entrega.';
+      if (item.esEnsamblado) msg += '\n\nATENCIÓN: este equipo es un ensamblado. Sus componentes volverán a estar disponibles.';
+      if (item.estado === 'ensamblado') msg += '\n\nATENCIÓN: este equipo está ensamblado en ' + (item.ensambladoEn || 'otro equipo') + '. Eliminarlo dejará al ensamblado incompleto.';
+    } else if (type === 'donantes') {
+      const count = equipos.filter(e => e.donante === item.nombre).length;
+      msg = `¿Eliminar al donante "${item.nombre}"?`;
+      if (count > 0) msg += `\n\nHay ${count} equipo(s) asociados. Sus registros quedarán con el nombre como texto histórico (no se borran).`;
+    } else if (type === 'instituciones') {
+      const count = entregas.filter(e => e.institucion === item.nombre).length;
+      msg = `¿Eliminar la institución "${item.nombre}"?`;
+      if (count > 0) msg += `\n\nHay ${count} entrega(s) asociadas. Los registros de entregas se mantienen con el nombre como texto histórico.`;
+    }
+
+    if (!confirm(msg)) return;
+
+    if (type === 'equipos') {
+      // If delivered, remove the entrega
+      if (item.estado === 'entregado') {
+        const en = entregas.find(e => e.equipoUID === item.uid);
+        if (en) deleteData('entregas', en._key || en.uid);
+      }
+      // If this is an assembled equipment, free its components and remove the ensamblado record
+      if (item.esEnsamblado && item.componentes) {
+        for (const compUID of item.componentes) {
+          const comp = equipos.find(e => e.uid === compUID);
+          if (comp) {
+            updateData('equipos', comp._key || comp.uid, { estado: 'disponible', ensambladoEn: null });
+          }
+        }
+        const ens = ensamblados.find(a => a.uid === item.uid);
+        if (ens) deleteData('ensamblados', ens._key || ens.uid);
+      }
+      deleteData('equipos', key);
+      toast('Equipo eliminado: ' + item.uid);
+    } else if (type === 'donantes') {
+      deleteData('donantes', key);
+      toast('Donante eliminado');
+    } else if (type === 'instituciones') {
+      deleteData('instituciones', key);
+      toast('Institución eliminada');
+    }
+
+    closeModal();
+  }
+
+  // Close modal with Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('edit-modal').classList.contains('visible')) {
+      closeModal();
+    }
+  });
+  document.getElementById('edit-modal').addEventListener('click', e => {
+    if (e.target.id === 'edit-modal') closeModal();
+  });
 
   // ============================================================
   // HELPERS
