@@ -6,6 +6,10 @@
   <title>Cursos — Segunda Vida Digital</title>
   <meta name="description" content="Aprendé desde cero: alfabetización informática, Office básico y caminos hacia carreras administrativas, marketing, datos y diseño web.">
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="./js/progress.js"></script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -71,6 +75,38 @@
       color: #faf7f2;
       border-color: #2a2620;
     }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px 6px 12px;
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #6a6358;
+    }
+
+    .user-chip .code {
+      font-family: 'Courier New', monospace;
+      color: #7a6a3d;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+
+    .user-chip button {
+      background: none;
+      border: none;
+      color: #6a6358;
+      cursor: pointer;
+      font-size: 11px;
+      text-decoration: underline;
+      padding: 2px 4px;
+      font-family: inherit;
+    }
+
+    .user-chip button:hover { color: #a83a3a; }
 
     /* --- Hero --- */
     .hero {
@@ -156,6 +192,28 @@
       text-transform: uppercase;
     }
 
+    .path-progress {
+      margin-top: 12px;
+      height: 4px;
+      background: #f2ede2;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .path-progress > div {
+      height: 100%;
+      background: #4a6a3a;
+      transition: width 0.4s;
+    }
+
+    .path-progress-text {
+      font-size: 10px;
+      color: #6a6358;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
     /* --- Connector --- */
     .connector {
       width: 2px;
@@ -206,6 +264,10 @@
       <a href="./cursos.html" class="active">Cursos</a>
       <a href="./app.html">Ingresar a gestión</a>
     </nav>
+    <div class="user-chip" id="user-chip" style="display:none">
+      <span id="user-chip-info"></span>
+      <button onclick="SVDProgress.changeCode()">Cambiar</button>
+    </div>
   </div>
 </div>
 
@@ -227,10 +289,29 @@
 </footer>
 
 <script>
-  async function loadAndRender() {
-    const res = await fetch('./data/cursos.json');
-    const data = await res.json();
+  SVDProgress.onReady(async () => {
+    renderUserChip();
+    try {
+      const res = await fetch('./data/cursos.json');
+      const data = await res.json();
+      renderTree(data);
+    } catch (err) {
+      document.getElementById('tree-content').innerHTML =
+        `<p style="text-align:center;color:#a83a3a">Error cargando los cursos: ${escapeHtml(err.message)}</p>`;
+    }
+  });
 
+  function renderUserChip() {
+    const chip = document.getElementById('user-chip');
+    if (!SVDProgress.code) return;
+    const info = SVDProgress.nombre
+      ? `${escapeHtml(SVDProgress.nombre)} · <span class="code">${escapeHtml(SVDProgress.code)}</span>`
+      : `<span class="code">${escapeHtml(SVDProgress.code)}</span>`;
+    document.getElementById('user-chip-info').innerHTML = info;
+    chip.style.display = 'flex';
+  }
+
+  function renderTree(data) {
     const tronco = data.paths.find(p => p.nivel === 'tronco');
     const intermedios = orderIntermedios(data.paths.filter(p => p.nivel === 'intermedio'), tronco);
     const carreras = data.paths.filter(p => p.nivel === 'carrera');
@@ -275,7 +356,6 @@
       seen.add(nextId);
       nextId = byId[nextId].siguiente;
     }
-    // Append any intermedio not reachable from the tronco chain
     for (const p of intermedios) {
       if (!seen.has(p.id)) ordered.push(p);
     }
@@ -294,26 +374,28 @@
   function renderCard(path) {
     const modCount = (path.modulos || []).length;
     const color = path.color || '#7a6a3d';
+    const done = (SVDProgress.paths && SVDProgress.paths[path.id] ? SVDProgress.paths[path.id].length : 0);
+    const pct = modCount ? Math.round((done / modCount) * 100) : 0;
+    const progressHtml = modCount > 0 ? `
+      <div class="path-progress"><div style="width:${pct}%"></div></div>
+      <div class="path-progress-text">${done} de ${modCount} completado${done === 1 ? '' : 's'}</div>
+    ` : '';
     return `
       <a href="./path.html?id=${encodeURIComponent(path.id)}" class="path-card" style="border-top-color:${color}">
         <div class="name">${escapeHtml(path.nombre)}</div>
         <div class="desc">${escapeHtml(path.descripcion || '')}</div>
         <div class="meta">${modCount} módulo${modCount === 1 ? '' : 's'}</div>
+        ${progressHtml}
       </a>
     `;
   }
 
   function escapeHtml(s) {
-    if (!s) return '';
+    if (s === undefined || s === null) return '';
     const d = document.createElement('div');
-    d.textContent = s;
+    d.textContent = String(s);
     return d.innerHTML;
   }
-
-  loadAndRender().catch(err => {
-    document.getElementById('tree-content').innerHTML =
-      `<p style="text-align:center;color:#a83a3a">Error cargando los cursos: ${escapeHtml(err.message)}</p>`;
-  });
 </script>
 
 </body>
