@@ -232,7 +232,7 @@
     const data = await res.json();
 
     const tronco = data.paths.find(p => p.nivel === 'tronco');
-    const intermedio = data.paths.find(p => p.nivel === 'intermedio');
+    const intermedios = orderIntermedios(data.paths.filter(p => p.nivel === 'intermedio'), tronco);
     const carreras = data.paths.filter(p => p.nivel === 'carrera');
 
     const tree = document.getElementById('tree-content');
@@ -242,10 +242,11 @@
       html += renderStage('Comenzá aquí', tronco);
       html += `<div class="connector"></div>`;
     }
-    if (intermedio) {
-      html += renderStage('Siguiente nivel', intermedio);
+    intermedios.forEach((p, i) => {
+      const label = i === 0 ? 'Siguiente nivel' : 'Después';
+      html += renderStage(label, p);
       html += `<div class="connector"></div>`;
-    }
+    });
     if (carreras.length) {
       html += `
         <div class="careers-header">
@@ -258,6 +259,27 @@
     }
 
     tree.innerHTML = html;
+  }
+
+  // Chain intermedios following the "siguiente" link from the tronco
+  // so the visual order matches the curricular flow regardless of how
+  // they're listed in the JSON file.
+  function orderIntermedios(intermedios, tronco) {
+    if (!intermedios.length) return [];
+    const byId = Object.fromEntries(intermedios.map(p => [p.id, p]));
+    const ordered = [];
+    const seen = new Set();
+    let nextId = tronco && tronco.siguiente;
+    while (nextId && byId[nextId] && !seen.has(nextId)) {
+      ordered.push(byId[nextId]);
+      seen.add(nextId);
+      nextId = byId[nextId].siguiente;
+    }
+    // Append any intermedio not reachable from the tronco chain
+    for (const p of intermedios) {
+      if (!seen.has(p.id)) ordered.push(p);
+    }
+    return ordered;
   }
 
   function renderStage(label, path) {

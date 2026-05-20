@@ -115,6 +115,7 @@
       "descripcion": "Herramientas de productividad esenciales: procesador de textos, planilla de cálculo, presentaciones y gestión de archivos en la nube.",
       "color": "#a85a3a",
       "requiere": "alfabetizacion",
+      "siguiente": "ia",
       "modulos": [
         {
           "id": "off-1",
@@ -155,12 +156,61 @@
       ]
     },
     {
+      "id": "ia",
+      "nivel": "intermedio",
+      "nombre": "Herramientas de IA",
+      "descripcion": "Aprendé a usar inteligencia artificial en tu trabajo diario: qué es la IA, cómo conversar con un asistente, generar contenido y dar tus primeros pasos con asistentes de código.",
+      "color": "#7a4a80",
+      "requiere": "office",
+      "modulos": [
+        {
+          "id": "ia-1",
+          "titulo": "¿Qué es la inteligencia artificial?",
+          "descripcion": "Conceptos básicos: qué es la IA, cómo aprende, qué puede y qué no puede hacer. Diferencias entre IA tradicional, machine learning e IA generativa.",
+          "duracion": "1 hora",
+          "recursos": [
+            { "tipo": "video", "titulo": "Qué es la IA explicado fácil", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
+          ]
+        },
+        {
+          "id": "ia-2",
+          "titulo": "Asistentes IA (chatbots)",
+          "descripcion": "Cómo conversar con ChatGPT, Claude o Gemini. Cómo hacer buenas preguntas (prompts), pedir resúmenes, traducciones, ideas y borradores.",
+          "duracion": "2 horas",
+          "recursos": [
+            { "tipo": "video", "titulo": "Cómo usar ChatGPT para principiantes", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" },
+            { "tipo": "practica", "titulo": "ChatGPT (gratis)", "url": "https://chat.openai.com/", "fuente": "OpenAI", "nota": "Probá conversar con la IA" },
+            { "tipo": "practica", "titulo": "Claude (gratis)", "url": "https://claude.ai/", "fuente": "Anthropic", "nota": "Otro asistente para comparar" }
+          ]
+        },
+        {
+          "id": "ia-3",
+          "titulo": "IA generativa: imágenes y contenido",
+          "descripcion": "Crear imágenes, textos y materiales con IA. Herramientas gratuitas como Bing Image Creator, ideogram, y uso responsable de contenido generado.",
+          "duracion": "2 horas",
+          "recursos": [
+            { "tipo": "video", "titulo": "Generar imágenes con IA", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" },
+            { "tipo": "practica", "titulo": "Bing Image Creator (gratis)", "url": "https://www.bing.com/images/create", "fuente": "Microsoft", "nota": "Generador de imágenes con IA gratuito" }
+          ]
+        },
+        {
+          "id": "ia-4",
+          "titulo": "Asistentes de código (básico)",
+          "descripcion": "Introducción a los asistentes de programación: qué hacen, cuándo conviene usarlos. Primeros pasos con GitHub Copilot o alternativas gratuitas para escribir código simple.",
+          "duracion": "2 horas",
+          "recursos": [
+            { "tipo": "video", "titulo": "Qué es GitHub Copilot", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
+          ]
+        }
+      ]
+    },
+    {
       "id": "administrativo",
       "nivel": "carrera",
       "nombre": "Administrativo",
       "descripcion": "Competencias para trabajos de oficina: comunicación profesional por email, manejo de agenda, planillas para inventarios y cuentas.",
       "color": "#7a6a3d",
-      "requiere": "office",
+      "requiere": "ia",
       "modulos": [
         { "id": "adm-1", "titulo": "Comunicación profesional por email", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
         { "id": "adm-2", "titulo": "Excel intermedio: tablas dinámicas y filtros", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
@@ -173,7 +223,7 @@
       "nombre": "Marketing digital",
       "descripcion": "Bases para promocionar en redes sociales: creación de contenido, manejo de Instagram/Facebook, métricas básicas, diseño con Canva.",
       "color": "#a85a3a",
-      "requiere": "office",
+      "requiere": "ia",
       "modulos": [
         { "id": "mkt-1", "titulo": "Redes sociales para negocios", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
         { "id": "mkt-2", "titulo": "Diseño con Canva", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
@@ -186,7 +236,7 @@
       "nombre": "Administración de datos",
       "descripcion": "Iniciación a bases de datos: conceptos básicos, SQL elemental, manejo de planillas grandes con datos.",
       "color": "#4a4880",
-      "requiere": "office",
+      "requiere": "ia",
       "modulos": [
         { "id": "dba-1", "titulo": "Qué es una base de datos", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
         { "id": "dba-2", "titulo": "SQL básico: SELECT, INSERT, UPDATE", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] },
@@ -199,7 +249,7 @@
       "nombre": "Diseño web",
       "descripcion": "Cómo armar un sitio web simple: HTML, CSS y publicación. Edición de imágenes para web.",
       "color": "#4a7a3a",
-      "requiere": "office",
+      "requiere": "ia",
       "modulos": [
         { "id": "web-1", "titulo": "Introducción a HTML", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
         { "id": "web-2", "titulo": "CSS: dándole estilo a la página", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
