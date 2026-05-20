@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Path — Segunda Vida Digital</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #faf7f2;
+      color: #2a2620;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    a { color: #7a6a3d; }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* --- Top bar --- */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid #e8e2d6;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .topbar .brand {
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #2a2620;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .topbar nav a {
+      font-size: 13px;
+      color: #6a6358;
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid #d4ccba;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .topbar nav a:hover {
+      background: #ffffff;
+      border-color: #7a6a3d;
+      color: #2a2620;
+    }
+
+    /* --- Header --- */
+    .path-header {
+      padding: 40px 0 24px;
+    }
+
+    .breadcrumb {
+      font-size: 13px;
+      color: #6a6358;
+      margin-bottom: 12px;
+    }
+
+    .breadcrumb a {
+      color: #7a6a3d;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .path-header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: #2a2620;
+      margin-bottom: 12px;
+    }
+
+    .path-header .desc {
+      font-size: 16px;
+      color: #2a2620;
+      max-width: 720px;
+    }
+
+    .progress-bar {
+      margin-top: 22px;
+      padding: 14px 18px;
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .progress-bar .progress-text {
+      font-size: 13px;
+      color: #6a6358;
+    }
+
+    .progress-bar .progress-text strong {
+      color: #2a2620;
+    }
+
+    .progress-bar-fill {
+      flex: 1;
+      min-width: 120px;
+      height: 6px;
+      background: #e8e2d6;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill > div {
+      height: 100%;
+      background: #4a6a3a;
+      transition: width 0.4s;
+    }
+
+    /* --- Modules --- */
+    .modules {
+      padding: 24px 0 40px;
+    }
+
+    .modules h2 {
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6a6358;
+      margin-bottom: 16px;
+    }
+
+    .module {
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .module.completed {
+      border-left: 4px solid #4a6a3a;
+    }
+
+    .module-head {
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .module-head:hover { background: #faf7f2; }
+
+    .module-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f2ede2;
+      color: #6a6358;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .module.completed .module-num {
+      background: #4a6a3a;
+      color: #ffffff;
+    }
+
+    .module-title {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: #2a2620;
+    }
+
+    .module-duration {
+      font-size: 12px;
+      color: #9a9285;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .module-toggle {
+      color: #9a9285;
+      font-size: 14px;
+      transition: transform 0.2s;
+    }
+
+    .module.open .module-toggle { transform: rotate(180deg); }
+
+    .module-body {
+      display: none;
+      padding: 0 20px 20px 66px;
+      border-top: 1px solid #f2ede2;
+      padding-top: 16px;
+    }
+
+    .module.open .module-body { display: block; }
+
+    .module-desc {
+      font-size: 14px;
+      color: #2a2620;
+      margin-bottom: 14px;
+    }
+
+    .resources-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9a9285;
+      margin-bottom: 8px;
+    }
+
+    .resource {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #faf7f2;
+      border: 1px solid #e8e2d6;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+
+    .resource:hover {
+      border-color: #7a6a3d;
+      background: #ffffff;
+    }
+
+    .resource-type {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #ffffff;
+      border: 1px solid #d4ccba;
+      color: #6a6358;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .resource-type.video { color: #a83a3a; border-color: #d4a0a0; }
+    .resource-type.practica { color: #4a6a3a; border-color: #b8d4a8; }
+    .resource-type.lectura { color: #4a4880; border-color: #b8b4d4; }
+
+    .resource-title {
+      flex: 1;
+      font-size: 14px;
+      color: #2a2620;
+    }
+
+    .resource-fuente {
+      font-size: 12px;
+      color: #9a9285;
+    }
+
+    .resource-todo {
+      font-size: 12px;
+      color: #a83a3a;
+      padding: 8px 12px;
+      background: #faf7f2;
+      border: 1px dashed #d4a0a0;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+
+    .module-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #d4ccba;
+      background: #ffffff;
+      color: #2a2620;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn:hover { background: #f2ede2; border-color: #7a6a3d; }
+
+    .btn-primary {
+      background: #4a6a3a;
+      border-color: #4a6a3a;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #3a5a2a;
+      border-color: #3a5a2a;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: #6a6358;
+      padding: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      text-decoration: underline;
+    }
+
+    /* --- Certificate section --- */
+    .cert-section {
+      margin: 32px 0;
+      padding: 28px;
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .cert-section.locked {
+      opacity: 0.7;
+    }
+
+    .cert-section h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2a2620;
+      margin-bottom: 8px;
+    }
+
+    .cert-section p {
+      font-size: 14px;
+      color: #6a6358;
+      margin-bottom: 16px;
+    }
+
+    .cert-section input {
+      padding: 10px 14px;
+      border: 1px solid #d4ccba;
+      border-radius: 6px;
+      background: #faf7f2;
+      font-size: 14px;
+      color: #2a2620;
+      min-width: 280px;
+      margin-right: 8px;
+      font-family: inherit;
+    }
+
+    .cert-section input:focus {
+      outline: none;
+      border-color: #7a6a3d;
+      background: #ffffff;
+    }
+
+    .cert-section .btn-primary {
+      padding: 10px 22px;
+      font-size: 14px;
+    }
+
+    /* --- Next path --- */
+    .next-path {
+      padding: 28px;
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      border-left: 4px solid #7a6a3d;
+    }
+
+    .next-path .label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #9a9285;
+      margin-bottom: 8px;
+    }
+
+    .next-path .name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2a2620;
+      margin-bottom: 6px;
+    }
+
+    .next-path .desc {
+      font-size: 14px;
+      color: #6a6358;
+      margin-bottom: 14px;
+    }
+
+    .next-path a {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #ffffff;
+      color: #2a2620;
+      border: 1px solid #d4ccba;
+      border-radius: 6px;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .next-path a:hover {
+      background: #f2ede2;
+      border-color: #7a6a3d;
+    }
+
+    /* --- Footer --- */
+    footer {
+      padding: 32px 0;
+      text-align: center;
+      font-size: 12px;
+      color: #9a9285;
+      border-top: 1px solid #e8e2d6;
+    }
+
+    @media (max-width: 600px) {
+      .module-body { padding: 16px 16px 16px 16px; }
+      .resource { flex-wrap: wrap; }
+      .cert-section input { min-width: 0; width: 100%; margin: 0 0 10px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <a href="./" class="brand">Segunda Vida Digital</a>
+    <nav>
+      <a href="./">Inicio</a>
+      <a href="./cursos.html">Cursos</a>
+      <a href="./app.html">Ingresar a gestión</a>
+    </nav>
+  </div>
+</div>
+
+<div class="container">
+  <div class="path-header" id="path-header"></div>
+  <div class="modules" id="modules"></div>
+  <div id="cert-section"></div>
+  <div id="next-path-section"></div>
+</div>
+
+<footer>
+  <div class="container">
+    Segunda Vida Digital · Proyecto comunitario sin fines de lucro
+  </div>
+</footer>
+
+<script>
+  let pathData = null;
+  let allPaths = [];
+
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    const pathId = params.get('id');
+    if (!pathId) {
+      document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#a83a3a">Path no especificado. <a href="./cursos.html">Ver todos los cursos</a></p>';
+      return;
+    }
+
+    const res = await fetch('./data/cursos.json');
+    const data = await res.json();
+    allPaths = data.paths;
+    pathData = allPaths.find(p => p.id === pathId);
+    if (!pathData) {
+      document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#a83a3a">Path no encontrado. <a href="./cursos.html">Ver todos los cursos</a></p>';
+      return;
+    }
+
+    document.title = pathData.nombre + ' — Segunda Vida Digital';
+    renderHeader();
+    renderModules();
+    renderCertificate();
+    renderNextPath();
+  }
+
+  function getCompleted() {
+    try { return JSON.parse(localStorage.getItem('svd_completed_' + pathData.id) || '[]'); }
+    catch { return []; }
+  }
+
+  function setCompleted(arr) {
+    localStorage.setItem('svd_completed_' + pathData.id, JSON.stringify(arr));
+  }
+
+  function isCompleted(moduleId) {
+    return getCompleted().includes(moduleId);
+  }
+
+  function toggleCompleted(moduleId) {
+    const arr = getCompleted();
+    const idx = arr.indexOf(moduleId);
+    if (idx >= 0) arr.splice(idx, 1);
+    else arr.push(moduleId);
+    setCompleted(arr);
+    renderHeader();
+    renderModules();
+    renderCertificate();
+  }
+
+  function pathProgress() {
+    const total = (pathData.modulos || []).length;
+    const done = (pathData.modulos || []).filter(m => isCompleted(m.id)).length;
+    return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
+  }
+
+  function renderHeader() {
+    const { total, done, pct } = pathProgress();
+    const color = pathData.color || '#7a6a3d';
+    document.getElementById('path-header').innerHTML = `
+      <div class="breadcrumb"><a href="./cursos.html">← Volver a todos los caminos</a></div>
+      <h1 style="color:${color}">${esc(pathData.nombre)}</h1>
+      <p class="desc">${esc(pathData.descripcion || '')}</p>
+      <div class="progress-bar">
+        <span class="progress-text"><strong>${done} de ${total}</strong> módulos completados (${pct}%)</span>
+        <div class="progress-bar-fill"><div style="width:${pct}%"></div></div>
+      </div>
+    `;
+  }
+
+  function renderModules() {
+    const mods = pathData.modulos || [];
+    const container = document.getElementById('modules');
+    container.innerHTML = '<h2>Módulos</h2>' + mods.map((m, i) => renderModule(m, i)).join('');
+    container.querySelectorAll('.module-head').forEach(el => {
+      el.addEventListener('click', () => {
+        el.closest('.module').classList.toggle('open');
+      });
+    });
+  }
+
+  function renderModule(m, i) {
+    const done = isCompleted(m.id);
+    const recursos = (m.recursos || []).map(r => renderResource(r)).join('') ||
+      '<p style="font-size:13px;color:#9a9285;font-style:italic">Recursos próximamente.</p>';
+    return `
+      <div class="module ${done ? 'completed' : ''}" id="mod-${esc(m.id)}">
+        <div class="module-head">
+          <div class="module-num">${done ? '✓' : (i + 1)}</div>
+          <div class="module-title">${esc(m.titulo)}</div>
+          <div class="module-duration">${esc(m.duracion || '')}</div>
+          <div class="module-toggle">▾</div>
+        </div>
+        <div class="module-body">
+          <p class="module-desc">${esc(m.descripcion || '')}</p>
+          <div class="resources-label">Recursos</div>
+          ${recursos}
+          <div class="module-actions">
+            <button class="btn ${done ? '' : 'btn-primary'}" onclick="toggleCompleted('${esc(m.id)}')">
+              ${done ? '✓ Completado · marcar como pendiente' : 'Marcar como completado'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderResource(r) {
+    if (!r.url || r.url === 'TODO') {
+      return `<div class="resource-todo">📌 ${esc(r.nota || 'Recurso pendiente de curar')} — ${esc(r.titulo || '')}</div>`;
+    }
+    const tipoClass = (r.tipo || '').toLowerCase();
+    const tipoLabel = (r.tipo || 'enlace').toUpperCase();
+    return `
+      <a class="resource" href="${esc(r.url)}" target="_blank" rel="noopener">
+        <span class="resource-type ${tipoClass}">${esc(tipoLabel)}</span>
+        <span class="resource-title">${esc(r.titulo || '')}</span>
+        <span class="resource-fuente">${esc(r.fuente || '')}</span>
+      </a>
+    `;
+  }
+
+  function renderCertificate() {
+    const { total, done } = pathProgress();
+    const completed = total > 0 && done === total;
+    const section = document.getElementById('cert-section');
+    if (!completed) {
+      section.innerHTML = `
+        <div class="cert-section locked">
+          <h3>🎓 Certificado de finalización</h3>
+          <p>Completá todos los módulos del camino para descargar tu certificado.</p>
+          <p style="font-size:13px;color:#9a9285">Te faltan ${total - done} módulo${total - done === 1 ? '' : 's'}.</p>
+        </div>
+      `;
+    } else {
+      section.innerHTML = `
+        <div class="cert-section">
+          <h3>🎓 ¡Felicitaciones!</h3>
+          <p>Completaste todos los módulos de <strong>${esc(pathData.nombre)}</strong>. Descargá tu certificado:</p>
+          <input type="text" id="cert-name" placeholder="Escribí tu nombre completo" />
+          <button class="btn btn-primary" onclick="generateCertificate()">Generar certificado</button>
+        </div>
+      `;
+    }
+  }
+
+  function renderNextPath() {
+    const section = document.getElementById('next-path-section');
+    if (!pathData.siguiente) { section.innerHTML = ''; return; }
+    const next = allPaths.find(p => p.id === pathData.siguiente);
+    if (!next) { section.innerHTML = ''; return; }
+    section.innerHTML = `
+      <div class="next-path" style="border-left-color:${next.color || '#7a6a3d'}">
+        <div class="label">Próximo camino</div>
+        <div class="name">${esc(next.nombre)}</div>
+        <div class="desc">${esc(next.descripcion || '')}</div>
+        <a href="./path.html?id=${encodeURIComponent(next.id)}">Ver módulos →</a>
+      </div>
+    `;
+  }
+
+  function generateCertificate() {
+    const name = (document.getElementById('cert-name').value || '').trim();
+    if (!name) { alert('Por favor ingresá tu nombre.'); return; }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const w = doc.internal.pageSize.getWidth();
+    const h = doc.internal.pageSize.getHeight();
+
+    // Border
+    doc.setDrawColor(122, 106, 61);
+    doc.setLineWidth(1.5);
+    doc.rect(12, 12, w - 24, h - 24);
+    doc.setLineWidth(0.3);
+    doc.rect(16, 16, w - 32, h - 32);
+
+    // Header
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(106, 99, 88);
+    doc.text('SEGUNDA VIDA DIGITAL', w / 2, 32, { align: 'center' });
+
+    // Title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(36);
+    doc.setTextColor(42, 38, 32);
+    doc.text('Certificado de Finalización', w / 2, 60, { align: 'center' });
+
+    // Body
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.setTextColor(106, 99, 88);
+    doc.text('Se otorga el presente certificado a', w / 2, 80, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(28);
+    doc.setTextColor(122, 106, 61);
+    doc.text(name, w / 2, 98, { align: 'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.setTextColor(106, 99, 88);
+    doc.text('por haber completado satisfactoriamente el camino de', w / 2, 116, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(42, 38, 32);
+    doc.text(pathData.nombre, w / 2, 132, { align: 'center' });
+
+    // Date
+    const fecha = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.setTextColor(154, 146, 133);
+    doc.text(fecha, w / 2, 160, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text('Proyecto comunitario de alfabetización tecnológica · segundavidadigital', w / 2, h - 26, { align: 'center' });
+
+    const safeName = name.replace(/[^a-zA-Z0-9-]/g, '_');
+    doc.save(`certificado_${pathData.id}_${safeName}.pdf`);
+  }
+
+  function esc(s) {
+    if (s === undefined || s === null) return '';
+    const d = document.createElement('div');
+    d.textContent = String(s);
+    return d.innerHTML;
+  }
+
+  init().catch(err => {
+    console.error(err);
+    document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#a83a3a">Error: ' + err.message + '</p>';
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursos — Segunda Vida Digital</title>
+  <meta name="description" content="Aprendé desde cero: alfabetización informática, Office básico y caminos hacia carreras administrativas, marketing, datos y diseño web.">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #faf7f2;
+      color: #2a2620;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    a { color: #7a6a3d; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* --- Top bar --- */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid #e8e2d6;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .topbar .brand {
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #2a2620;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .topbar nav a {
+      font-size: 13px;
+      color: #6a6358;
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid #d4ccba;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .topbar nav a:hover {
+      background: #ffffff;
+      border-color: #7a6a3d;
+      color: #2a2620;
+    }
+
+    .topbar nav a.active {
+      background: #2a2620;
+      color: #faf7f2;
+      border-color: #2a2620;
+    }
+
+    /* --- Hero --- */
+    .hero {
+      padding: 56px 0 32px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #2a2620;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      max-width: 640px;
+      margin: 0 auto;
+      color: #6a6358;
+      font-size: 16px;
+    }
+
+    /* --- Tree --- */
+    .tree {
+      padding: 32px 0 64px;
+    }
+
+    .stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stage-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #9a9285;
+      margin-bottom: 10px;
+    }
+
+    .path-card {
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-radius: 12px;
+      padding: 22px 26px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(42, 38, 32, 0.04);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.2s;
+      border-top: 4px solid #7a6a3d;
+    }
+
+    .path-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(42, 38, 32, 0.08);
+    }
+
+    .path-card .name {
+      font-size: 17px;
+      font-weight: 600;
+      color: #2a2620;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .path-card .desc {
+      font-size: 13px;
+      color: #6a6358;
+      margin-bottom: 10px;
+    }
+
+    .path-card .meta {
+      font-size: 11px;
+      color: #9a9285;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* --- Connector --- */
+    .connector {
+      width: 2px;
+      height: 32px;
+      background: #d4ccba;
+      margin: 0 auto;
+    }
+
+    /* --- Careers grid --- */
+    .careers-header {
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .careers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .careers-grid .path-card {
+      max-width: 100%;
+    }
+
+    /* --- Footer --- */
+    footer {
+      padding: 32px 0;
+      text-align: center;
+      font-size: 12px;
+      color: #9a9285;
+      border-top: 1px solid #e8e2d6;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 40px 0 24px; }
+      .path-card { padding: 18px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <a href="./" class="brand">Segunda Vida Digital</a>
+    <nav>
+      <a href="./">Inicio</a>
+      <a href="./cursos.html" class="active">Cursos</a>
+      <a href="./app.html">Ingresar a gestión</a>
+    </nav>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <h1>Tu camino de aprendizaje</h1>
+    <p>Elegí por dónde empezar. Si nunca usaste una computadora, arrancá por <strong>Alfabetización</strong>. Si ya manejás lo básico, podés saltar directo a una carrera.</p>
+  </div>
+</section>
+
+<section class="tree container">
+  <div id="tree-content"></div>
+</section>
+
+<footer>
+  <div class="container">
+    Segunda Vida Digital · Proyecto comunitario sin fines de lucro
+  </div>
+</footer>
+
+<script>
+  async function loadAndRender() {
+    const res = await fetch('./data/cursos.json');
+    const data = await res.json();
+
+    const tronco = data.paths.find(p => p.nivel === 'tronco');
+    const intermedio = data.paths.find(p => p.nivel === 'intermedio');
+    const carreras = data.paths.filter(p => p.nivel === 'carrera');
+
+    const tree = document.getElementById('tree-content');
+    let html = '';
+
+    if (tronco) {
+      html += renderStage('Comenzá aquí', tronco);
+      html += `<div class="connector"></div>`;
+    }
+    if (intermedio) {
+      html += renderStage('Siguiente nivel', intermedio);
+      html += `<div class="connector"></div>`;
+    }
+    if (carreras.length) {
+      html += `
+        <div class="careers-header">
+          <div class="stage-label">Elegí un camino de carrera</div>
+        </div>
+        <div class="careers-grid">
+          ${carreras.map(c => renderCard(c)).join('')}
+        </div>
+      `;
+    }
+
+    tree.innerHTML = html;
+  }
+
+  function renderStage(label, path) {
+    return `
+      <div class="stage">
+        <div class="stage-label">${escapeHtml(label)}</div>
+        ${renderCard(path)}
+      </div>
+    `;
+  }
+
+  function renderCard(path) {
+    const modCount = (path.modulos || []).length;
+    const color = path.color || '#7a6a3d';
+    return `
+      <a href="./path.html?id=${encodeURIComponent(path.id)}" class="path-card" style="border-top-color:${color}">
+        <div class="name">${escapeHtml(path.nombre)}</div>
+        <div class="desc">${escapeHtml(path.descripcion || '')}</div>
+        <div class="meta">${modCount} módulo${modCount === 1 ? '' : 's'}</div>
+      </a>
+    `;
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  loadAndRender().catch(err => {
+    document.getElementById('tree-content').innerHTML =
+      `<p style="text-align:center;color:#a83a3a">Error cargando los cursos: ${escapeHtml(err.message)}</p>`;
+  });
+</script>
+
+</body>
+</html>

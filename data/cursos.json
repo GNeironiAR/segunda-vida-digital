@@ -1,0 +1,210 @@
+{
+  "_instrucciones": "Editá este archivo para agregar/modificar paths y módulos. Cada path es una etapa (tronco, intermedio o carrera). Los módulos van en orden dentro de cada path. Los recursos son links externos (YouTube, MDN, etc.). Cuando termines de armar un path, el usuario puede descargar un certificado.",
+  "paths": [
+    {
+      "id": "alfabetizacion",
+      "nivel": "tronco",
+      "nombre": "Alfabetización informática",
+      "descripcion": "Aprendé desde cero qué es una computadora, cómo usar el mouse y el teclado, cómo encender el sistema, navegar archivos y conectarte a Internet.",
+      "color": "#4a7a3a",
+      "siguiente": "office",
+      "modulos": [
+        {
+          "id": "alf-1",
+          "titulo": "Partes de una computadora",
+          "descripcion": "Conocé los componentes físicos: monitor, CPU, teclado, mouse, parlantes y conexiones.",
+          "duracion": "30 min",
+          "recursos": [
+            {
+              "tipo": "video",
+              "titulo": "Partes de la computadora y sus funciones",
+              "url": "https://www.youtube.com/results?search_query=partes+de+la+computadora+explicacion",
+              "fuente": "YouTube",
+              "nota": "REEMPLAZAR con link directo curado"
+            }
+          ]
+        },
+        {
+          "id": "alf-2",
+          "titulo": "Usar el mouse y el teclado",
+          "descripcion": "Movimiento del cursor, clic izquierdo/derecho, doble clic, arrastrar. Teclas básicas, mayúsculas, Enter, espacio, retroceso.",
+          "duracion": "45 min",
+          "recursos": [
+            {
+              "tipo": "video",
+              "titulo": "Cómo usar el mouse — curso básico",
+              "url": "https://www.youtube.com/results?search_query=como+usar+el+mouse+principiantes",
+              "fuente": "YouTube",
+              "nota": "REEMPLAZAR con link directo curado"
+            },
+            {
+              "tipo": "practica",
+              "titulo": "Práctica de tipeo (Typing Club)",
+              "url": "https://www.typingclub.com/",
+              "fuente": "TypingClub",
+              "nota": "Plataforma gratuita para practicar mecanografía"
+            }
+          ]
+        },
+        {
+          "id": "alf-3",
+          "titulo": "Encendido y sistema operativo",
+          "descripcion": "Cómo encender y apagar la computadora correctamente. Escritorio, ventanas, menú de inicio en Linux Mint.",
+          "duracion": "30 min",
+          "recursos": [
+            {
+              "tipo": "video",
+              "titulo": "Introducción a Linux Mint para principiantes",
+              "url": "https://www.youtube.com/results?search_query=linux+mint+principiantes+espanol",
+              "fuente": "YouTube",
+              "nota": "REEMPLAZAR con link directo curado"
+            }
+          ]
+        },
+        {
+          "id": "alf-4",
+          "titulo": "Archivos y carpetas",
+          "descripcion": "Crear, abrir, copiar y mover archivos. Organizar tu trabajo en carpetas.",
+          "duracion": "45 min",
+          "recursos": [
+            {
+              "tipo": "video",
+              "titulo": "Manejo de archivos y carpetas",
+              "url": "https://www.youtube.com/results?search_query=manejo+de+archivos+y+carpetas+principiantes",
+              "fuente": "YouTube",
+              "nota": "REEMPLAZAR con link directo curado"
+            }
+          ]
+        },
+        {
+          "id": "alf-5",
+          "titulo": "Conectarse a Internet",
+          "descripcion": "Qué es Internet, cómo abrir un navegador, buscar información y navegar de forma segura.",
+          "duracion": "1 hora",
+          "recursos": [
+            {
+              "tipo": "video",
+              "titulo": "Qué es Internet y cómo funciona",
+              "url": "https://www.youtube.com/results?search_query=que+es+internet+explicacion+simple",
+              "fuente": "YouTube",
+              "nota": "REEMPLAZAR con link directo curado"
+            }
+          ]
+        },
+        {
+          "id": "alf-6",
+          "titulo": "Crear una cuenta de email",
+          "descripcion": "Tu primer correo: crear una cuenta de Gmail, enviar y recibir mensajes, adjuntar archivos.",
+          "duracion": "1 hora",
+          "recursos": [
+            {
+              "tipo": "video",
+              "titulo": "Cómo crear y usar Gmail",
+              "url": "https://www.youtube.com/results?search_query=como+crear+gmail+paso+a+paso",
+              "fuente": "YouTube",
+              "nota": "REEMPLAZAR con link directo curado"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "office",
+      "nivel": "intermedio",
+      "nombre": "Office básico",
+      "descripcion": "Herramientas de productividad esenciales: procesador de textos, planilla de cálculo, presentaciones y gestión de archivos en la nube.",
+      "color": "#a85a3a",
+      "requiere": "alfabetizacion",
+      "modulos": [
+        {
+          "id": "off-1",
+          "titulo": "Procesador de textos (Word / LibreOffice Writer)",
+          "descripcion": "Escribir documentos, formato básico, guardar e imprimir.",
+          "duracion": "2 horas",
+          "recursos": [
+            { "tipo": "video", "titulo": "Curso básico de LibreOffice Writer", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
+          ]
+        },
+        {
+          "id": "off-2",
+          "titulo": "Planilla de cálculo (Excel / LibreOffice Calc)",
+          "descripcion": "Tablas, fórmulas básicas, gráficos simples.",
+          "duracion": "3 horas",
+          "recursos": [
+            { "tipo": "video", "titulo": "Curso básico de LibreOffice Calc", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
+          ]
+        },
+        {
+          "id": "off-3",
+          "titulo": "Presentaciones (PowerPoint / Impress)",
+          "descripcion": "Armar una presentación con diapositivas, texto e imágenes.",
+          "duracion": "2 horas",
+          "recursos": [
+            { "tipo": "video", "titulo": "TODO", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
+          ]
+        },
+        {
+          "id": "off-4",
+          "titulo": "Archivos en la nube (Google Drive)",
+          "descripcion": "Subir, compartir y editar archivos online. Trabajar desde cualquier lugar.",
+          "duracion": "1 hora",
+          "recursos": [
+            { "tipo": "video", "titulo": "TODO", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "administrativo",
+      "nivel": "carrera",
+      "nombre": "Administrativo",
+      "descripcion": "Competencias para trabajos de oficina: comunicación profesional por email, manejo de agenda, planillas para inventarios y cuentas.",
+      "color": "#7a6a3d",
+      "requiere": "office",
+      "modulos": [
+        { "id": "adm-1", "titulo": "Comunicación profesional por email", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
+        { "id": "adm-2", "titulo": "Excel intermedio: tablas dinámicas y filtros", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
+        { "id": "adm-3", "titulo": "Gestión de agenda y calendario", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] }
+      ]
+    },
+    {
+      "id": "marketing",
+      "nivel": "carrera",
+      "nombre": "Marketing digital",
+      "descripcion": "Bases para promocionar en redes sociales: creación de contenido, manejo de Instagram/Facebook, métricas básicas, diseño con Canva.",
+      "color": "#a85a3a",
+      "requiere": "office",
+      "modulos": [
+        { "id": "mkt-1", "titulo": "Redes sociales para negocios", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
+        { "id": "mkt-2", "titulo": "Diseño con Canva", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
+        { "id": "mkt-3", "titulo": "Métricas básicas de redes", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] }
+      ]
+    },
+    {
+      "id": "dba",
+      "nivel": "carrera",
+      "nombre": "Administración de datos",
+      "descripcion": "Iniciación a bases de datos: conceptos básicos, SQL elemental, manejo de planillas grandes con datos.",
+      "color": "#4a4880",
+      "requiere": "office",
+      "modulos": [
+        { "id": "dba-1", "titulo": "Qué es una base de datos", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
+        { "id": "dba-2", "titulo": "SQL básico: SELECT, INSERT, UPDATE", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] },
+        { "id": "dba-3", "titulo": "Excel avanzado para datos", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] }
+      ]
+    },
+    {
+      "id": "diseno-web",
+      "nivel": "carrera",
+      "nombre": "Diseño web",
+      "descripcion": "Cómo armar un sitio web simple: HTML, CSS y publicación. Edición de imágenes para web.",
+      "color": "#4a7a3a",
+      "requiere": "office",
+      "modulos": [
+        { "id": "web-1", "titulo": "Introducción a HTML", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
+        { "id": "web-2", "titulo": "CSS: dándole estilo a la página", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
+        { "id": "web-3", "titulo": "Publicar un sitio gratis con Netlify o GitHub Pages", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] }
+      ]
+    }
+  ]
+}
