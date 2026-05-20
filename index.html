@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Segunda Vida Digital</title>
+  <title>Segunda Vida Digital — Tecnología que vuelve a empezar</title>
+  <meta name="description" content="Recuperamos equipos informáticos y los donamos a instituciones y personas que no tienen acceso a recursos tecnológicos.">
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK (solo Realtime Database, sin auth para la landing) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <style>
@@ -17,1016 +17,342 @@
       background: #faf7f2;
       color: #2a2620;
       font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.55;
       min-height: 100vh;
     }
 
-    .page {
-      max-width: 900px;
+    a { color: #7a6a3d; }
+
+    .container {
+      max-width: 1000px;
       margin: 0 auto;
-      padding: 0 20px 40px;
+      padding: 0 24px;
     }
 
-    /* --- Header --- */
-    header {
-      text-align: center;
-      padding: 24px 0 8px;
-    }
-
-    header h1 {
-      font-size: clamp(1.3rem, 4vw, 2rem);
-      font-weight: 300;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #2a2620;
-    }
-
-    header p {
-      margin-top: 4px;
-      font-size: clamp(0.8rem, 2vw, 0.95rem);
-      color: #6a6358;
-      font-style: italic;
-    }
-
-    /* --- Tabs --- */
-    .tabs {
-      display: flex;
-      gap: 4px;
-      justify-content: center;
-      padding: 16px 0;
-      flex-wrap: wrap;
-    }
-
-    .tabs button {
-      background: #ffffff;
-      border: 1px solid #e8e2d6;
-      border-radius: 6px;
-      color: #6a6358;
-      padding: 8px 16px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.05em;
-    }
-
-    .tabs button.active {
-      background: #2a2620;
-      color: #faf7f2;
-      border-color: #2a2620;
-    }
-
-    .tabs button:hover:not(.active) {
-      background: #f2ede2;
-      color: #2a2620;
-      border-color: #d4ccba;
-    }
-
-    /* --- Sections --- */
-    .section { display: none; }
-    .section.active { display: block; }
-
-    /* --- Stats bar --- */
-    .stats-bar {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 8px 0 16px;
-    }
-
-    .stat-card {
-      background: #ffffff;
-      border: 1px solid #e8e2d6;
-      border-radius: 8px;
-      padding: 12px 20px;
-      text-align: center;
-      min-width: 120px;
-      box-shadow: 0 1px 3px rgba(42, 38, 32, 0.04);
-    }
-
-    .stat-card .num {
-      font-size: 1.8rem;
-      color: #7a6a3d;
-      font-weight: 400;
-    }
-
-    .stat-card .label {
-      font-size: 11px;
-      color: #6a6358;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-top: 2px;
-    }
-
-    /* --- Forms --- */
-    .form-card {
-      background: #ffffff;
-      border: 1px solid #e8e2d6;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(42, 38, 32, 0.04);
-    }
-
-    .form-card h3 {
-      font-size: 14px;
-      font-weight: 500;
-      color: #2a2620;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #e8e2d6;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-      min-width: 150px;
-    }
-
-    .form-group label {
-      font-size: 11px;
-      color: #6a6358;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 8px 12px;
-      background: #faf7f2;
-      border: 1px solid #d4ccba;
-      border-radius: 4px;
-      color: #2a2620;
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      border-color: #7a6a3d;
-      background: #ffffff;
-    }
-
-    .form-group select {
-      color-scheme: light;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-
-    .btn {
-      padding: 8px 20px;
-      background: #ffffff;
-      border: 1px solid #d4ccba;
-      border-radius: 6px;
-      color: #2a2620;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.05em;
-      font-weight: 500;
-    }
-
-    .btn:hover {
-      background: #f2ede2;
-      border-color: #7a6a3d;
-    }
-
-    .btn-primary {
-      background: #4a6a3a;
-      border-color: #4a6a3a;
-      color: #ffffff;
-    }
-
-    .btn-primary:hover {
-      background: #3a5a2a;
-      border-color: #3a5a2a;
-      color: #ffffff;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    /* --- Tables --- */
-    .table-wrap {
-      overflow-x: auto;
-      margin-top: 12px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    th {
-      text-align: left;
-      padding: 8px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #6a6358;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid #d4ccba;
-    }
-
-    td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #e8e2d6;
-      color: #2a2620;
-    }
-
-    tr:hover td {
-      background: #faf7f2;
-    }
-
-    .uid {
-      font-family: 'Courier New', monospace;
-      color: #7a6a3d;
-      font-weight: bold;
-      font-size: 12px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      letter-spacing: 0.03em;
-    }
-
-    .badge-disponible {
-      background: #e8f0e0;
-      color: #3a6a2a;
-      border: 1px solid #b8d4a8;
-    }
-
-    .badge-entregado {
-      background: #f0e8d4;
-      color: #6a5520;
-      border: 1px solid #d4c08a;
-    }
-
-    .badge-ensamblado {
-      background: #e2e0ef;
-      color: #4a4880;
-      border: 1px solid #b8b4d4;
-    }
-
-    /* --- Assembly chips --- */
-    .chip-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-      min-height: 32px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      background: #f2ede2;
-      border: 1px solid #d4ccba;
-      border-radius: 4px;
-      font-size: 12px;
-      color: #2a2620;
-    }
-
-    .chip .chip-remove {
-      cursor: pointer;
-      color: #6a6358;
-      font-size: 14px;
-      line-height: 1;
-    }
-
-    .chip .chip-remove:hover {
-      color: #a83a3a;
-    }
-
-    /* --- Search --- */
-    .search-bar {
-      margin-bottom: 12px;
-    }
-
-    .search-bar input {
-      width: 100%;
-      padding: 10px 14px;
-      background: #ffffff;
-      border: 1px solid #d4ccba;
-      border-radius: 6px;
-      color: #2a2620;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .search-bar input:focus {
-      border-color: #7a6a3d;
-    }
-
-    .search-bar input::placeholder {
-      color: #9a9285;
-    }
-
-    /* --- Trace card --- */
-    .trace-card {
-      background: #ffffff;
-      border: 1px solid #e8e2d6;
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 3px rgba(42, 38, 32, 0.04);
-    }
-
-    .trace-header {
+    /* --- Top bar --- */
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      padding: 18px 0;
+      border-bottom: 1px solid #e8e2d6;
     }
 
-    .trace-header .uid {
-      font-size: 16px;
-    }
-
-    .trace-flow {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+    .topbar .brand {
       font-size: 13px;
-      margin-top: 8px;
-    }
-
-    .trace-node {
-      background: #faf7f2;
-      border: 1px solid #e8e2d6;
-      border-radius: 6px;
-      padding: 6px 12px;
-      color: #2a2620;
-    }
-
-    .trace-node.donor { border-left: 3px solid #4a7a3a; }
-    .trace-node.equip { border-left: 3px solid #7a6a3d; }
-    .trace-node.recip { border-left: 3px solid #a85a3a; }
-
-    .trace-arrow {
-      color: #9a9285;
-      font-size: 16px;
-    }
-
-    .trace-detail {
-      font-size: 12px;
-      color: #6a6358;
-      margin-top: 6px;
-    }
-
-    /* --- Toast --- */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #4a6a3a;
-      border: 1px solid #3a5a2a;
-      color: #ffffff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s;
-      pointer-events: none;
-      z-index: 100;
-      box-shadow: 0 4px 12px rgba(42, 38, 32, 0.15);
-    }
-
-    .toast.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.error {
-      background: #a83a3a;
-      border-color: #8a3030;
-      color: #ffffff;
-    }
-
-    /* --- Empty state --- */
-    .empty {
-      text-align: center;
-      padding: 32px;
-      color: #9a9285;
-      font-style: italic;
-      font-size: 14px;
-    }
-
-    /* --- Login screen --- */
-    .login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .login-card {
-      background: #ffffff;
-      border: 1px solid #e8e2d6;
-      border-radius: 12px;
-      padding: 32px;
-      width: 100%;
-      max-width: 360px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(42, 38, 32, 0.06);
-    }
-
-    .login-card h1 {
-      font-size: 1.4rem;
-      font-weight: 300;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: #2a2620;
-      margin-bottom: 4px;
+      font-weight: 500;
     }
 
-    .login-card .subtitle {
-      font-size: 0.85rem;
+    .topbar .topbar-link {
+      font-size: 13px;
+      color: #6a6358;
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid #d4ccba;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .topbar .topbar-link:hover {
+      background: #ffffff;
+      border-color: #7a6a3d;
+      color: #2a2620;
+    }
+
+    /* --- Hero --- */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #2a2620;
+      margin-bottom: 10px;
+    }
+
+    .hero .tagline {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
       color: #6a6358;
       font-style: italic;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
-    .login-card .form-group {
-      margin-bottom: 12px;
-      text-align: left;
-    }
-
-    .login-card input {
-      width: 100%;
-      padding: 10px 14px;
-      background: #faf7f2;
-      border: 1px solid #d4ccba;
-      border-radius: 6px;
+    .hero .lead {
+      max-width: 640px;
+      margin: 0 auto;
+      font-size: 17px;
       color: #2a2620;
-      font-size: 14px;
-      outline: none;
     }
 
-    .login-card input:focus {
-      border-color: #7a6a3d;
-      background: #ffffff;
+    /* --- Metrics --- */
+    .metrics {
+      padding: 32px 0 64px;
     }
 
-    .login-card input::placeholder {
-      color: #9a9285;
-    }
-
-    .login-card .btn-login {
-      width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      background: #4a6a3a;
-      border: 1px solid #4a6a3a;
-      border-radius: 6px;
-      color: #ffffff;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-weight: 500;
-    }
-
-    .login-card .btn-login:hover {
-      background: #3a5a2a;
-      border-color: #3a5a2a;
-    }
-
-    .login-card .btn-login:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .login-error {
-      color: #a83a3a;
-      font-size: 13px;
-      margin-top: 10px;
-      min-height: 18px;
-    }
-
-    /* --- User bar --- */
-    .user-bar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0 0;
-    }
-
-    .user-bar .user-email {
+    .metrics-title {
+      text-align: center;
       font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       color: #6a6358;
+      margin-bottom: 22px;
     }
 
-    .user-bar .btn-logout {
-      background: none;
-      border: 1px solid #d4ccba;
-      border-radius: 4px;
-      color: #6a6358;
-      padding: 4px 10px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s;
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
     }
 
-    .user-bar .btn-logout:hover {
-      border-color: #a83a3a;
-      color: #a83a3a;
-      background: #ffffff;
-    }
-
-    .app-content { display: none; }
-
-    /* --- Row actions --- */
-    .row-actions {
-      display: flex;
-      gap: 4px;
-      white-space: nowrap;
-    }
-
-    .btn-mini {
-      background: #ffffff;
-      border: 1px solid #d4ccba;
-      border-radius: 4px;
-      color: #2a2620;
-      padding: 3px 10px;
-      font-size: 11px;
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      transition: all 0.2s;
-      font-weight: 500;
-    }
-
-    .btn-mini:hover {
-      background: #f2ede2;
-      border-color: #7a6a3d;
-    }
-
-    .btn-mini.danger:hover {
-      border-color: #a83a3a;
-      color: #a83a3a;
-      background: #ffffff;
-    }
-
-    /* --- Modal --- */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(42, 38, 32, 0.4);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      padding: 20px;
-      backdrop-filter: blur(2px);
-    }
-
-    .modal-overlay.visible { display: flex; }
-
-    .modal {
+    .metric-card {
       background: #ffffff;
       border: 1px solid #e8e2d6;
       border-radius: 10px;
-      width: 100%;
-      max-width: 520px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 24px;
-      box-shadow: 0 10px 40px rgba(42, 38, 32, 0.15);
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(42, 38, 32, 0.04);
     }
 
-    .modal h3 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #2a2620;
+    .metric-card .num {
+      font-size: 2.5rem;
+      color: #7a6a3d;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .metric-card .label {
+      font-size: 12px;
+      color: #6a6358;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-bottom: 6px;
+      margin-top: 8px;
     }
 
-    .modal .modal-uid {
-      font-family: 'Courier New', monospace;
-      color: #7a6a3d;
-      font-size: 12px;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e8e2d6;
-    }
-
-    .modal .modal-footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 16px;
-      padding-top: 14px;
+    /* --- Sections --- */
+    .section {
+      padding: 56px 0;
       border-top: 1px solid #e8e2d6;
     }
 
-    .btn-danger {
-      background: #ffffff;
-      border: 1px solid #a83a3a;
-      color: #a83a3a;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-      letter-spacing: 0.05em;
-      font-weight: 500;
+    .section h2 {
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #2a2620;
+      text-align: center;
+      margin-bottom: 36px;
     }
 
-    .btn-danger:hover {
-      background: #a83a3a;
+    /* --- How it works --- */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .step {
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .step .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #4a6a3a;
       color: #ffffff;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .step h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #2a2620;
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: #6a6358;
+    }
+
+    /* --- Collaborate cards --- */
+    .collab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .collab-card {
+      background: #ffffff;
+      border: 1px solid #e8e2d6;
+      border-left: 4px solid #7a6a3d;
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .collab-card.donor { border-left-color: #4a7a3a; }
+    .collab-card.school { border-left-color: #a85a3a; }
+    .collab-card.volunteer { border-left-color: #4a4880; }
+
+    .collab-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2a2620;
+      margin-bottom: 8px;
+    }
+
+    .collab-card p {
+      font-size: 14px;
+      color: #6a6358;
+    }
+
+    /* --- About --- */
+    .about-text {
+      max-width: 720px;
+      margin: 0 auto;
+      font-size: 15px;
+      color: #2a2620;
+    }
+
+    .about-text p { margin-bottom: 14px; }
+
+    /* --- Footer --- */
+    footer {
+      padding: 32px 0;
+      text-align: center;
+      font-size: 12px;
+      color: #9a9285;
+      border-top: 1px solid #e8e2d6;
     }
 
     /* --- Responsive --- */
     @media (max-width: 600px) {
-      .form-row { flex-direction: column; }
-      .form-group { min-width: 100%; }
-      .stat-card { min-width: 90px; padding: 10px 14px; }
-      .stat-card .num { font-size: 1.4rem; }
-      .tabs button { padding: 6px 10px; font-size: 12px; }
+      .hero { padding: 50px 0 30px; }
+      .metric-card .num { font-size: 2rem; }
+      .section { padding: 40px 0; }
     }
   </style>
 </head>
 <body>
-<!-- Login Screen -->
-<div class="login-screen" id="login-screen">
-  <div class="login-card">
-    <h1>Segunda Vida Digital</h1>
-    <p class="subtitle">Trazabilidad de donaciones tecnológicas</p>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="login-email" placeholder="tu@email.com">
-    </div>
-    <div class="form-group">
-      <label>Contraseña</label>
-      <input type="password" id="login-pass" placeholder="••••••••">
-    </div>
-    <button class="btn-login" id="btn-login" onclick="doLogin()">Ingresar</button>
-    <div class="login-error" id="login-error"></div>
+
+<div class="container">
+  <div class="topbar">
+    <span class="brand">Segunda Vida Digital</span>
+    <a href="./app.html" class="topbar-link">Ingresar a gestión</a>
   </div>
 </div>
 
-<!-- App (hidden until authenticated) -->
-<div class="page app-content" id="app-content">
-
-  <div class="user-bar">
-    <span class="user-email" id="user-email"></span>
-    <button class="btn-logout" onclick="doLogout()">Cerrar sesión</button>
-  </div>
-
-  <header>
+<section class="hero">
+  <div class="container">
     <h1>Segunda Vida Digital</h1>
-    <p>Trazabilidad de donaciones tecnológicas</p>
-  </header>
-
-  <!-- Stats -->
-  <div class="stats-bar">
-    <div class="stat-card"><div class="num" id="stat-equipos">0</div><div class="label">Equipos</div></div>
-    <div class="stat-card"><div class="num" id="stat-disponibles">0</div><div class="label">Disponibles</div></div>
-    <div class="stat-card"><div class="num" id="stat-entregados">0</div><div class="label">Entregados</div></div>
-    <div class="stat-card"><div class="num" id="stat-donantes">0</div><div class="label">Donantes</div></div>
-    <div class="stat-card"><div class="num" id="stat-instituciones">0</div><div class="label">Instituciones</div></div>
+    <p class="tagline">Tecnología que vuelve a empezar</p>
+    <p class="lead">
+      Recuperamos equipos informáticos que ya no se utilizan, los restauramos con software libre y los donamos a instituciones y personas sin acceso a recursos tecnológicos.
+    </p>
   </div>
+</section>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="active" onclick="showTab('ingreso')">+ Ingreso</button>
-    <button onclick="showTab('ensamblar')">Ensamblar</button>
-    <button onclick="showTab('entrega')">Entrega</button>
-    <button onclick="showTab('inventario')">Inventario</button>
-    <button onclick="showTab('donantes')">Donantes</button>
-    <button onclick="showTab('instituciones')">Instituciones</button>
-    <button onclick="showTab('trazabilidad')">Trazabilidad</button>
+<section class="metrics container">
+  <p class="metrics-title">Nuestro impacto</p>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="num" id="m-entregados">—</div>
+      <div class="label">Equipos entregados</div>
+    </div>
+    <div class="metric-card">
+      <div class="num" id="m-instituciones">—</div>
+      <div class="label">Instituciones beneficiadas</div>
+    </div>
+    <div class="metric-card">
+      <div class="num" id="m-donantes">—</div>
+      <div class="label">Donantes activos</div>
+    </div>
+    <div class="metric-card">
+      <div class="num" id="m-componentes">—</div>
+      <div class="label">Componentes recuperados</div>
+    </div>
   </div>
+</section>
 
-  <!-- TAB: Ingreso -->
-  <div class="section active" id="sec-ingreso">
-    <div class="form-card">
-      <h3>Registrar nuevo equipo</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Tipo de equipo</label>
-          <select id="eq-tipo">
-            <option value="Notebook">Notebook</option>
-            <option value="PC de escritorio">PC de escritorio</option>
-            <option value="Monitor">Monitor</option>
-            <option value="Teclado">Teclado</option>
-            <option value="Mouse">Mouse</option>
-            <option value="Impresora">Impresora</option>
-            <option value="Componente">Componente</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Marca / Modelo</label>
-          <input type="text" id="eq-marca" placeholder="Ej: Lenovo ThinkPad T440">
-        </div>
+<section class="section">
+  <div class="container">
+    <h2>¿Cómo lo hacemos?</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Recibimos</h3>
+        <p>Aceptamos equipos viejos, notebooks con poca RAM, componentes sueltos y todo aquello que ya no se usa pero todavía funciona.</p>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Donante</label>
-          <select id="eq-donante">
-            <option value="">— Seleccionar o crear nuevo —</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Fecha de ingreso</label>
-          <input type="date" id="eq-fecha">
-        </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Restauramos</h3>
+        <p>Limpiamos, reparamos, ensamblamos lo que falte e instalamos Linux Mint y software libre para que el equipo sea útil otra vez.</p>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Descripción / Estado</label>
-          <textarea id="eq-desc" placeholder="Ej: Funciona, poca RAM (2GB), sin cargador..."></textarea>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="registrarEquipo()">Registrar equipo</button>
-        <button class="btn" onclick="showTab('donantes'); showNuevoDonante()">+ Nuevo donante</button>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Entregamos</h3>
+        <p>Donamos los equipos a escuelas, comedores, bibliotecas y personas en situación de vulnerabilidad que necesitan acceso a la tecnología.</p>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- TAB: Ensamblar -->
-  <div class="section" id="sec-ensamblar">
-    <div class="form-card">
-      <h3>Armar equipo informático</h3>
-      <p style="font-size:13px;color:#6a6358;margin-bottom:14px">
-        Seleccioná componentes disponibles para armar un equipo completo. Los componentes individuales quedarán vinculados al nuevo equipo ensamblado.
+<section class="section">
+  <div class="container">
+    <h2>¿Cómo colaborar?</h2>
+    <div class="collab-grid">
+      <div class="collab-card donor">
+        <h3>Donando equipos</h3>
+        <p>Si tenés notebooks, PCs, monitores, teclados o componentes que no usás, podemos darles una segunda vida. Aceptamos todo lo que funcione total o parcialmente.</p>
+      </div>
+      <div class="collab-card school">
+        <h3>Recibiendo equipos</h3>
+        <p>Si trabajás en una escuela, comedor, biblioteca u organización que necesita recursos informáticos, podemos coordinar una entrega.</p>
+      </div>
+      <div class="collab-card volunteer">
+        <h3>Sumándote como voluntario/a</h3>
+        <p>Si te interesa ayudar a restaurar equipos, instalar Linux, dar talleres o coordinar entregas, te queremos en el equipo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>El proyecto</h2>
+    <div class="about-text">
+      <p>
+        Segunda Vida Digital es una iniciativa comunitaria que nace de una observación simple: hay mucho hardware que se descarta sólo porque ya no corre el último Windows o porque no alcanza para los requerimientos actuales. Pero ese mismo hardware todavía sirve perfectamente para tareas cotidianas: escribir, navegar, estudiar.
       </p>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nombre del equipo</label>
-          <input type="text" id="ens-nombre" placeholder="Ej: PC Escuela - Intel i3 + 4GB RAM">
-        </div>
-        <div class="form-group">
-          <label>Tipo</label>
-          <select id="ens-tipo">
-            <option value="PC de escritorio">PC de escritorio</option>
-            <option value="Notebook">Notebook</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Agregar componente</label>
-          <select id="ens-componente" onchange="agregarComponente()">
-            <option value="">— Seleccionar componente disponible —</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Fecha de ensamblado</label>
-          <input type="date" id="ens-fecha">
-        </div>
-      </div>
-      <div>
-        <label style="font-size:11px;color:#6a6358;text-transform:uppercase;letter-spacing:0.05em">Componentes seleccionados</label>
-        <div class="chip-list" id="ens-chips"></div>
-      </div>
-      <div class="form-row" style="margin-top:10px">
-        <div class="form-group">
-          <label>Notas</label>
-          <textarea id="ens-notas" placeholder="Ej: Se limpió todo, se instaló Linux Mint 21, funciona OK"></textarea>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="registrarEnsamblado()">Ensamblar equipo</button>
-      </div>
-    </div>
-
-    <!-- Ensamblados recientes -->
-    <div class="form-card">
-      <h3>Equipos ensamblados</h3>
-      <div class="table-wrap">
-        <table id="tabla-ensamblados">
-          <thead>
-            <tr><th>UID</th><th>Nombre</th><th>Componentes</th><th>Fecha</th><th>Estado</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="empty" id="empty-ensamblados">No hay equipos ensamblados</div>
+      <p>
+        Nuestro trabajo es darles a esos equipos una segunda vida con Linux Mint y otras herramientas libres, y hacerlos llegar a quienes hoy no tienen acceso. Cada equipo que recuperamos es uno menos en un basural electrónico y una oportunidad más para alguien que necesita conectarse, aprender o trabajar.
+      </p>
     </div>
   </div>
+</section>
 
-  <!-- TAB: Entrega -->
-  <div class="section" id="sec-entrega">
-    <div class="form-card">
-      <h3>Registrar entrega a institución</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Equipo a entregar</label>
-          <select id="ent-equipo">
-            <option value="">— Seleccionar equipo disponible —</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Institución receptora</label>
-          <select id="ent-institucion">
-            <option value="">— Seleccionar o crear nueva —</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Fecha de entrega</label>
-          <input type="date" id="ent-fecha">
-        </div>
-        <div class="form-group">
-          <label>Notas</label>
-          <input type="text" id="ent-notas" placeholder="Ej: Se instaló Linux Mint 21">
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="registrarEntrega()">Registrar entrega</button>
-        <button class="btn" onclick="showTab('instituciones'); showNuevaInstitucion()">+ Nueva institución</button>
-      </div>
-    </div>
-
-    <!-- Entregas recientes -->
-    <div class="form-card">
-      <h3>Entregas recientes</h3>
-      <div class="table-wrap">
-        <table id="tabla-entregas">
-          <thead>
-            <tr><th>Fecha</th><th>Equipo</th><th>Institución</th><th>Notas</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="empty" id="empty-entregas">No hay entregas registradas</div>
-    </div>
+<footer>
+  <div class="container">
+    Segunda Vida Digital · Proyecto comunitario sin fines de lucro
   </div>
-
-  <!-- TAB: Inventario -->
-  <div class="section" id="sec-inventario">
-    <div class="search-bar">
-      <input type="text" id="inv-search" placeholder="Buscar por UID, tipo, marca, donante..." oninput="renderInventario()">
-    </div>
-    <div class="table-wrap">
-      <table id="tabla-inventario">
-        <thead>
-          <tr><th>UID</th><th>Tipo</th><th>Marca/Modelo</th><th>Donante</th><th>Fecha ingreso</th><th>Estado</th><th></th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="empty" id="empty-inventario">No hay equipos registrados</div>
-  </div>
-
-  <!-- TAB: Donantes -->
-  <div class="section" id="sec-donantes">
-    <div class="form-card" id="form-donante">
-      <h3>Registrar donante</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" id="don-nombre" placeholder="Nombre completo o empresa">
-        </div>
-        <div class="form-group">
-          <label>Contacto</label>
-          <input type="text" id="don-contacto" placeholder="Teléfono, email, etc.">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Notas</label>
-          <input type="text" id="don-notas" placeholder="Ej: Empresa de IT, dona periódicamente">
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="registrarDonante()">Registrar donante</button>
-      </div>
-    </div>
-    <div class="form-card">
-      <h3>Donantes registrados</h3>
-      <div class="table-wrap">
-        <table id="tabla-donantes">
-          <thead>
-            <tr><th>Nombre</th><th>Contacto</th><th>Equipos donados</th><th>Notas</th><th></th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="empty" id="empty-donantes">No hay donantes registrados</div>
-    </div>
-  </div>
-
-  <!-- TAB: Instituciones -->
-  <div class="section" id="sec-instituciones">
-    <div class="form-card" id="form-institucion">
-      <h3>Registrar institución</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" id="inst-nombre" placeholder="Ej: Escuela D103">
-        </div>
-        <div class="form-group">
-          <label>Tipo</label>
-          <select id="inst-tipo">
-            <option value="Escuela">Escuela</option>
-            <option value="ONG">ONG</option>
-            <option value="Comedor">Comedor</option>
-            <option value="Biblioteca">Biblioteca</option>
-            <option value="Centro comunitario">Centro comunitario</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Ubicación</label>
-          <input type="text" id="inst-ubicacion" placeholder="Dirección o localidad">
-        </div>
-        <div class="form-group">
-          <label>Contacto</label>
-          <input type="text" id="inst-contacto" placeholder="Persona de contacto, tel, email">
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="registrarInstitucion()">Registrar institución</button>
-      </div>
-    </div>
-    <div class="form-card">
-      <h3>Instituciones registradas</h3>
-      <div class="table-wrap">
-        <table id="tabla-instituciones">
-          <thead>
-            <tr><th>Nombre</th><th>Tipo</th><th>Ubicación</th><th>Contacto</th><th>Equipos recibidos</th><th></th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="empty" id="empty-instituciones">No hay instituciones registradas</div>
-    </div>
-  </div>
-
-  <!-- TAB: Trazabilidad -->
-  <div class="section" id="sec-trazabilidad">
-    <div class="search-bar">
-      <input type="text" id="trace-search" placeholder="Buscar por UID, donante, institución..." oninput="renderTrazabilidad()">
-    </div>
-    <div id="trace-results"></div>
-    <div class="empty" id="empty-trazabilidad">No hay equipos registrados</div>
-  </div>
-
-</div>
-
-</div>
-
-<!-- Edit Modal -->
-<div class="modal-overlay" id="edit-modal">
-  <div class="modal">
-    <h3 id="modal-title">Editar</h3>
-    <div class="modal-uid" id="modal-uid"></div>
-    <div id="modal-body"></div>
-    <div class="modal-footer">
-      <button class="btn-danger" onclick="deleteFromModal()">Eliminar</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveModal()">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+</footer>
 
 <script>
-  // ============================================================
-  // FIREBASE CONFIG — Replace with your own project credentials
-  // ============================================================
   const FIREBASE_CONFIG = {
     apiKey: "AIzaSyDnnc8Sli0hH5Ne6mv89y7vewQM6nusvC8",
     authDomain: "segunda-vida-digital.firebaseapp.com",
@@ -1037,954 +363,26 @@
     appId: "1:429210360338:web:b8606a1c3f9b24378096cb"
   };
 
-  let db = null;
-  let auth = null;
-  let firebaseReady = false;
-
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.database();
-    auth = firebase.auth();
-    firebaseReady = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
+    const db = firebase.database();
+    db.ref('public_stats').on('value', snap => {
+      const s = snap.val() || {};
+      setMetric('m-entregados', s.equipos_entregados);
+      setMetric('m-instituciones', s.instituciones_beneficiadas);
+      setMetric('m-donantes', s.donantes_activos);
+      setMetric('m-componentes', s.componentes_recuperados);
+    }, err => console.warn('No se pudieron cargar las métricas públicas:', err));
   } catch (e) {
-    console.warn('Firebase not configured, using localStorage fallback.');
+    console.warn('Firebase no inicializado:', e);
   }
 
-  // ============================================================
-  // STATE
-  // ============================================================
-  let equipos = [];
-  let donantes = [];
-  let instituciones = [];
-  let entregas = [];
-  let ensamblados = [];
-  let selectedComponents = []; // UIDs for current assembly
-
-  // ============================================================
-  // PERSISTENCE (Firebase + localStorage fallback)
-  // ============================================================
-  function loadData() {
-    if (firebaseReady) {
-      loadFirebase();
-    } else {
-      loadLocal();
-    }
-  }
-
-  function loadFirebase() {
-    db.ref('equipos').on('value', snap => {
-      equipos = [];
-      if (snap.exists()) snap.forEach(c => { const v = c.val(); v._key = c.key; equipos.push(v); });
-      onDataChange();
-    });
-    db.ref('donantes').on('value', snap => {
-      donantes = [];
-      if (snap.exists()) snap.forEach(c => { const v = c.val(); v._key = c.key; donantes.push(v); });
-      onDataChange();
-    });
-    db.ref('instituciones').on('value', snap => {
-      instituciones = [];
-      if (snap.exists()) snap.forEach(c => { const v = c.val(); v._key = c.key; instituciones.push(v); });
-      onDataChange();
-    });
-    db.ref('entregas').on('value', snap => {
-      entregas = [];
-      if (snap.exists()) snap.forEach(c => { const v = c.val(); v._key = c.key; entregas.push(v); });
-      onDataChange();
-    });
-    db.ref('ensamblados').on('value', snap => {
-      ensamblados = [];
-      if (snap.exists()) snap.forEach(c => { const v = c.val(); v._key = c.key; ensamblados.push(v); });
-      onDataChange();
-    });
-  }
-
-  function loadLocal() {
-    try { equipos = JSON.parse(localStorage.getItem('svd_equipos') || '[]'); } catch { equipos = []; }
-    try { donantes = JSON.parse(localStorage.getItem('svd_donantes') || '[]'); } catch { donantes = []; }
-    try { instituciones = JSON.parse(localStorage.getItem('svd_instituciones') || '[]'); } catch { instituciones = []; }
-    try { entregas = JSON.parse(localStorage.getItem('svd_entregas') || '[]'); } catch { entregas = []; }
-    try { ensamblados = JSON.parse(localStorage.getItem('svd_ensamblados') || '[]'); } catch { ensamblados = []; }
-    onDataChange();
-  }
-
-  function saveLocal() {
-    localStorage.setItem('svd_equipos', JSON.stringify(equipos));
-    localStorage.setItem('svd_donantes', JSON.stringify(donantes));
-    localStorage.setItem('svd_instituciones', JSON.stringify(instituciones));
-    localStorage.setItem('svd_entregas', JSON.stringify(entregas));
-    localStorage.setItem('svd_ensamblados', JSON.stringify(ensamblados));
-  }
-
-  function pushData(collection, entry) {
-    if (firebaseReady) {
-      return db.ref(collection).push(entry);
-    } else {
-      if (collection === 'equipos') equipos.push(entry);
-      else if (collection === 'donantes') donantes.push(entry);
-      else if (collection === 'instituciones') instituciones.push(entry);
-      else if (collection === 'entregas') entregas.push(entry);
-      else if (collection === 'ensamblados') ensamblados.push(entry);
-      saveLocal();
-      onDataChange();
-    }
-  }
-
-  function updateData(collection, key, updates) {
-    if (firebaseReady) {
-      return db.ref(collection + '/' + key).update(updates);
-    } else {
-      const arr = collectionArr(collection);
-      const item = arr.find(i => i.uid === key || i._key === key);
-      if (item) Object.assign(item, updates);
-      saveLocal();
-      onDataChange();
-    }
-  }
-
-  function deleteData(collection, key) {
-    if (firebaseReady) {
-      return db.ref(collection + '/' + key).remove();
-    } else {
-      const arr = collectionArr(collection);
-      const idx = arr.findIndex(i => i.uid === key || i._key === key);
-      if (idx >= 0) arr.splice(idx, 1);
-      saveLocal();
-      onDataChange();
-    }
-  }
-
-  function collectionArr(collection) {
-    return collection === 'equipos' ? equipos :
-           collection === 'donantes' ? donantes :
-           collection === 'instituciones' ? instituciones :
-           collection === 'entregas' ? entregas :
-           collection === 'ensamblados' ? ensamblados : [];
-  }
-
-  // ============================================================
-  // UID GENERATION
-  // ============================================================
-  function nextUID() {
-    let max = 0;
-    for (const eq of equipos) {
-      const n = parseInt(eq.uid.replace('SVD-', ''), 10);
-      if (n > max) max = n;
-    }
-    return 'SVD-' + String(max + 1).padStart(5, '0');
-  }
-
-  // ============================================================
-  // TABS
-  // ============================================================
-  function showTab(name) {
-    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-
-    const idx = ['ingreso','ensamblar','entrega','inventario','donantes','instituciones','trazabilidad'].indexOf(name);
-    if (idx >= 0) document.querySelectorAll('.tabs button')[idx].classList.add('active');
-    document.getElementById('sec-' + name).classList.add('active');
-  }
-
-  // ============================================================
-  // REGISTER FUNCTIONS
-  // ============================================================
-  function registrarDonante() {
-    const nombre = document.getElementById('don-nombre').value.trim();
-    if (!nombre) return toast('Ingresá un nombre para el donante', true);
-
-    const entry = {
-      nombre,
-      contacto: document.getElementById('don-contacto').value.trim(),
-      notas: document.getElementById('don-notas').value.trim(),
-      fecha: new Date().toISOString()
-    };
-
-    pushData('donantes', entry);
-    document.getElementById('don-nombre').value = '';
-    document.getElementById('don-contacto').value = '';
-    document.getElementById('don-notas').value = '';
-    toast('Donante registrado: ' + nombre);
-  }
-
-  function registrarInstitucion() {
-    const nombre = document.getElementById('inst-nombre').value.trim();
-    if (!nombre) return toast('Ingresá un nombre para la institución', true);
-
-    const entry = {
-      nombre,
-      tipo: document.getElementById('inst-tipo').value,
-      ubicacion: document.getElementById('inst-ubicacion').value.trim(),
-      contacto: document.getElementById('inst-contacto').value.trim(),
-      fecha: new Date().toISOString()
-    };
-
-    pushData('instituciones', entry);
-    document.getElementById('inst-nombre').value = '';
-    document.getElementById('inst-ubicacion').value = '';
-    document.getElementById('inst-contacto').value = '';
-    toast('Institución registrada: ' + nombre);
-  }
-
-  function registrarEquipo() {
-    const donante = document.getElementById('eq-donante').value;
-    if (!donante) return toast('Seleccioná un donante', true);
-
-    const fecha = document.getElementById('eq-fecha').value;
-    if (!fecha) return toast('Ingresá la fecha de ingreso', true);
-
-    const uid = nextUID();
-    const entry = {
-      uid,
-      tipo: document.getElementById('eq-tipo').value,
-      marca: document.getElementById('eq-marca').value.trim(),
-      donante,
-      fecha,
-      descripcion: document.getElementById('eq-desc').value.trim(),
-      estado: 'disponible',
-      fechaCreacion: new Date().toISOString()
-    };
-
-    pushData('equipos', entry);
-    document.getElementById('eq-marca').value = '';
-    document.getElementById('eq-desc').value = '';
-    toast('Equipo registrado: ' + uid);
-  }
-
-  function registrarEntrega() {
-    const equipoUID = document.getElementById('ent-equipo').value;
-    if (!equipoUID) return toast('Seleccioná un equipo', true);
-
-    const institucion = document.getElementById('ent-institucion').value;
-    if (!institucion) return toast('Seleccioná una institución', true);
-
-    const fecha = document.getElementById('ent-fecha').value;
-    if (!fecha) return toast('Ingresá la fecha de entrega', true);
-
-    const entry = {
-      equipoUID,
-      institucion,
-      fecha,
-      notas: document.getElementById('ent-notas').value.trim(),
-      fechaCreacion: new Date().toISOString()
-    };
-
-    pushData('entregas', entry);
-
-    // Mark equipment as delivered
-    const eq = equipos.find(e => e.uid === equipoUID);
-    if (eq) {
-      const key = eq._key || eq.uid;
-      updateData('equipos', key, { estado: 'entregado' });
-    }
-
-    document.getElementById('ent-notas').value = '';
-    toast('Entrega registrada: ' + equipoUID + ' → ' + institucion);
-  }
-
-  // ============================================================
-  // ASSEMBLY FUNCTIONS
-  // ============================================================
-  function agregarComponente() {
-    const sel = document.getElementById('ens-componente');
-    const uid = sel.value;
-    if (!uid || selectedComponents.includes(uid)) { sel.value = ''; return; }
-    selectedComponents.push(uid);
-    sel.value = '';
-    renderChips();
-    renderSelects();
-  }
-
-  function quitarComponente(uid) {
-    selectedComponents = selectedComponents.filter(u => u !== uid);
-    renderChips();
-    renderSelects();
-  }
-
-  function renderChips() {
-    const container = document.getElementById('ens-chips');
-    if (!selectedComponents.length) {
-      container.innerHTML = '<span style="color:#9a9285;font-size:12px;font-style:italic">Ningún componente seleccionado</span>';
-      return;
-    }
-    container.innerHTML = selectedComponents.map(uid => {
-      const eq = equipos.find(e => e.uid === uid);
-      const label = eq ? `${uid} — ${eq.tipo} ${eq.marca}` : uid;
-      return `<div class="chip"><span class="uid" style="font-size:11px">${esc(label)}</span><span class="chip-remove" onclick="quitarComponente('${uid}')">&times;</span></div>`;
-    }).join('');
-  }
-
-  function registrarEnsamblado() {
-    const nombre = document.getElementById('ens-nombre').value.trim();
-    if (!nombre) return toast('Ingresá un nombre para el equipo', true);
-    if (selectedComponents.length < 2) return toast('Seleccioná al menos 2 componentes', true);
-    const fecha = document.getElementById('ens-fecha').value;
-    if (!fecha) return toast('Ingresá la fecha de ensamblado', true);
-
-    const uid = nextUID();
-    // Collect donors from components
-    const donantesComponentes = [...new Set(selectedComponents.map(u => {
-      const eq = equipos.find(e => e.uid === u);
-      return eq ? eq.donante : '';
-    }).filter(Boolean))];
-
-    const entry = {
-      uid,
-      tipo: document.getElementById('ens-tipo').value,
-      nombre,
-      componentes: selectedComponents.slice(),
-      donantes: donantesComponentes,
-      fecha,
-      notas: document.getElementById('ens-notas').value.trim(),
-      fechaCreacion: new Date().toISOString()
-    };
-
-    pushData('ensamblados', entry);
-
-    // Also create an equipment entry so it appears in delivery & inventory
-    const eqEntry = {
-      uid,
-      tipo: document.getElementById('ens-tipo').value,
-      marca: nombre,
-      donante: donantesComponentes.join(', '),
-      fecha,
-      descripcion: 'Ensamblado con: ' + selectedComponents.join(', ') + (document.getElementById('ens-notas').value.trim() ? '. ' + document.getElementById('ens-notas').value.trim() : ''),
-      estado: 'disponible',
-      esEnsamblado: true,
-      componentes: selectedComponents.slice(),
-      fechaCreacion: new Date().toISOString()
-    };
-
-    pushData('equipos', eqEntry);
-
-    // Mark components as "ensamblado"
-    for (const compUID of selectedComponents) {
-      const eq = equipos.find(e => e.uid === compUID);
-      if (eq) {
-        const key = eq._key || eq.uid;
-        updateData('equipos', key, { estado: 'ensamblado', ensambladoEn: uid });
-      }
-    }
-
-    selectedComponents = [];
-    document.getElementById('ens-nombre').value = '';
-    document.getElementById('ens-notas').value = '';
-    renderChips();
-    toast('Equipo ensamblado: ' + uid + ' (' + nombre + ')');
-  }
-
-  // ============================================================
-  // RENDER
-  // ============================================================
-  function onDataChange() {
-    renderStats();
-    renderSelects();
-    renderInventario();
-    renderEnsamblados();
-    renderDonantes();
-    renderInstituciones();
-    renderEntregas();
-    renderTrazabilidad();
-    renderChips();
-  }
-
-  function renderStats() {
-    const disponibles = equipos.filter(e => e.estado === 'disponible').length;
-    const entregados = equipos.filter(e => e.estado === 'entregado').length;
-    document.getElementById('stat-equipos').textContent = equipos.filter(e => e.estado !== 'ensamblado').length;
-    document.getElementById('stat-disponibles').textContent = disponibles;
-    document.getElementById('stat-entregados').textContent = entregados;
-    document.getElementById('stat-donantes').textContent = donantes.length;
-    document.getElementById('stat-instituciones').textContent = instituciones.length;
-  }
-
-  function renderSelects() {
-    // Donantes select in equipment form
-    const donSel = document.getElementById('eq-donante');
-    const donVal = donSel.value;
-    donSel.innerHTML = '<option value="">— Seleccionar donante —</option>';
-    for (const d of donantes) {
-      donSel.innerHTML += `<option value="${esc(d.nombre)}">${esc(d.nombre)}</option>`;
-    }
-    if (donVal) donSel.value = donVal;
-
-    // Equipment select in delivery form (only available, not raw components)
-    const eqSel = document.getElementById('ent-equipo');
-    const eqVal = eqSel.value;
-    eqSel.innerHTML = '<option value="">— Seleccionar equipo disponible —</option>';
-    for (const e of equipos) {
-      if (e.estado === 'disponible') {
-        eqSel.innerHTML += `<option value="${esc(e.uid)}">${esc(e.uid)} — ${esc(e.tipo)} ${esc(e.marca)}</option>`;
-      }
-    }
-    if (eqVal) eqSel.value = eqVal;
-
-    // Components select in assembly form (only available, not already selected)
-    const compSel = document.getElementById('ens-componente');
-    const compVal = compSel.value;
-    compSel.innerHTML = '<option value="">— Seleccionar componente disponible —</option>';
-    for (const e of equipos) {
-      if (e.estado === 'disponible' && !e.esEnsamblado && !selectedComponents.includes(e.uid)) {
-        compSel.innerHTML += `<option value="${esc(e.uid)}">${esc(e.uid)} — ${esc(e.tipo)} ${esc(e.marca)} (${esc(e.donante)})</option>`;
-      }
-    }
-    if (compVal) compSel.value = compVal;
-
-    // Institutions select in delivery form
-    const instSel = document.getElementById('ent-institucion');
-    const instVal = instSel.value;
-    instSel.innerHTML = '<option value="">— Seleccionar institución —</option>';
-    for (const i of instituciones) {
-      instSel.innerHTML += `<option value="${esc(i.nombre)}">${esc(i.nombre)}</option>`;
-    }
-    if (instVal) instSel.value = instVal;
-  }
-
-  function renderInventario() {
-    const search = (document.getElementById('inv-search').value || '').toLowerCase();
-    const tbody = document.querySelector('#tabla-inventario tbody');
-    const filtered = equipos.filter(e => {
-      if (!search) return true;
-      return (e.uid + ' ' + e.tipo + ' ' + e.marca + ' ' + e.donante).toLowerCase().includes(search);
-    });
-
-    tbody.innerHTML = '';
-    document.getElementById('empty-inventario').style.display = filtered.length ? 'none' : 'block';
-
-    for (const e of filtered.slice().reverse()) {
-      const badgeClass = e.estado === 'disponible' ? 'badge-disponible' : e.estado === 'ensamblado' ? 'badge-ensamblado' : 'badge-entregado';
-      const badgeText = e.estado === 'disponible' ? 'Disponible' : e.estado === 'ensamblado' ? 'Ensamblado → ' + (e.ensambladoEn || '') : 'Entregado';
-      const tipoLabel = e.esEnsamblado ? e.tipo + ' (ensamblado)' : e.tipo;
-      const key = e._key || e.uid;
-      tbody.innerHTML += `<tr>
-        <td class="uid">${esc(e.uid)}</td>
-        <td>${esc(tipoLabel)}</td>
-        <td>${esc(e.marca)}</td>
-        <td>${esc(e.donante)}</td>
-        <td>${esc(e.fecha)}</td>
-        <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-        <td class="row-actions"><button class="btn-mini" onclick="openModal('equipos','${esc(key)}')">Editar</button></td>
-      </tr>`;
-    }
-  }
-
-  function renderEnsamblados() {
-    const tbody = document.querySelector('#tabla-ensamblados tbody');
-    tbody.innerHTML = '';
-    document.getElementById('empty-ensamblados').style.display = ensamblados.length ? 'none' : 'block';
-
-    for (const a of ensamblados.slice().reverse()) {
-      const eq = equipos.find(e => e.uid === a.uid);
-      const estado = eq ? eq.estado : 'disponible';
-      const badgeClass = estado === 'disponible' ? 'badge-disponible' : 'badge-entregado';
-      const badgeText = estado === 'disponible' ? 'Disponible' : 'Entregado';
-      const comps = (a.componentes || []).join(', ');
-      tbody.innerHTML += `<tr>
-        <td class="uid">${esc(a.uid)}</td>
-        <td>${esc(a.nombre)}</td>
-        <td style="font-size:11px">${esc(comps)}</td>
-        <td>${esc(a.fecha)}</td>
-        <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-      </tr>`;
-    }
-  }
-
-  function renderDonantes() {
-    const tbody = document.querySelector('#tabla-donantes tbody');
-    tbody.innerHTML = '';
-    document.getElementById('empty-donantes').style.display = donantes.length ? 'none' : 'block';
-
-    for (const d of donantes.slice().reverse()) {
-      const count = equipos.filter(e => e.donante === d.nombre).length;
-      const key = d._key || d.nombre;
-      tbody.innerHTML += `<tr>
-        <td>${esc(d.nombre)}</td>
-        <td>${esc(d.contacto)}</td>
-        <td>${count}</td>
-        <td>${esc(d.notas)}</td>
-        <td class="row-actions"><button class="btn-mini" onclick="openModal('donantes','${esc(key)}')">Editar</button></td>
-      </tr>`;
-    }
-  }
-
-  function renderInstituciones() {
-    const tbody = document.querySelector('#tabla-instituciones tbody');
-    tbody.innerHTML = '';
-    document.getElementById('empty-instituciones').style.display = instituciones.length ? 'none' : 'block';
-
-    for (const i of instituciones.slice().reverse()) {
-      const count = entregas.filter(e => e.institucion === i.nombre).length;
-      const key = i._key || i.nombre;
-      tbody.innerHTML += `<tr>
-        <td>${esc(i.nombre)}</td>
-        <td>${esc(i.tipo)}</td>
-        <td>${esc(i.ubicacion)}</td>
-        <td>${esc(i.contacto)}</td>
-        <td>${count}</td>
-        <td class="row-actions"><button class="btn-mini" onclick="openModal('instituciones','${esc(key)}')">Editar</button></td>
-      </tr>`;
-    }
-  }
-
-  function renderEntregas() {
-    const tbody = document.querySelector('#tabla-entregas tbody');
-    tbody.innerHTML = '';
-    document.getElementById('empty-entregas').style.display = entregas.length ? 'none' : 'block';
-
-    for (const e of entregas.slice().reverse()) {
-      tbody.innerHTML += `<tr>
-        <td>${esc(e.fecha)}</td>
-        <td class="uid">${esc(e.equipoUID)}</td>
-        <td>${esc(e.institucion)}</td>
-        <td>${esc(e.notas)}</td>
-      </tr>`;
-    }
-  }
-
-  function renderTrazabilidad() {
-    const search = (document.getElementById('trace-search').value || '').toLowerCase();
-    const container = document.getElementById('trace-results');
-    container.innerHTML = '';
-
-    const filtered = equipos.filter(e => {
-      if (!search) return true;
-      const entrega = entregas.find(en => en.equipoUID === e.uid);
-      const instName = entrega ? entrega.institucion : '';
-      return (e.uid + ' ' + e.tipo + ' ' + e.marca + ' ' + e.donante + ' ' + instName).toLowerCase().includes(search);
-    });
-
-    // Don't show items that were consumed into assemblies
-    const visibleItems = filtered.filter(e => e.estado !== 'ensamblado');
-    document.getElementById('empty-trazabilidad').style.display = visibleItems.length ? 'none' : 'block';
-
-    for (const e of visibleItems.slice().reverse()) {
-      const entrega = entregas.find(en => en.equipoUID === e.uid);
-      const badgeClass = e.estado === 'disponible' ? 'badge-disponible' : 'badge-entregado';
-      const badgeText = e.estado === 'disponible' ? 'Disponible' : 'Entregado';
-
-      let html = `<div class="trace-card">
-        <div class="trace-header">
-          <span class="uid">${esc(e.uid)}</span>
-          <span class="badge ${badgeClass}">${badgeText}</span>
-        </div>
-        <div style="font-size:13px;color:#6a6358;margin-bottom:8px">${esc(e.tipo)}${e.esEnsamblado ? ' (ensamblado)' : ''} — ${esc(e.marca)}</div>
-        <div class="trace-flow">`;
-
-      // If assembled, show each component's donor
-      if (e.esEnsamblado && e.componentes) {
-        for (let ci = 0; ci < e.componentes.length; ci++) {
-          const compUID = e.componentes[ci];
-          const comp = equipos.find(x => x.uid === compUID);
-          if (ci > 0) html += `<span class="trace-arrow" style="width:100%;text-align:center;font-size:12px;color:#9a9285"></span>`;
-          html += `
-          <div class="trace-node donor" style="font-size:12px">
-            <div style="font-size:10px;color:#6a6358">Donante: ${comp ? esc(comp.donante) : '?'}</div>
-            <div class="uid" style="font-size:11px">${esc(compUID)}</div>
-            <div style="font-size:10px;color:#9a9285">${comp ? esc(comp.tipo) + ' ' + esc(comp.marca) : ''}</div>
-          </div>`;
-        }
-        html += `
-          <span class="trace-arrow">→</span>
-          <div class="trace-node equip" style="border-left:3px solid #4a4880">
-            <div style="font-size:11px;color:#6a6358">Ensamblado</div>
-            <div class="uid">${esc(e.uid)}</div>
-          </div>`;
-      } else {
-        html += `
-          <div class="trace-node donor">
-            <div style="font-size:11px;color:#6a6358">Donante</div>
-            <div>${esc(e.donante)}</div>
-            <div style="font-size:11px;color:#9a9285">${esc(e.fecha)}</div>
-          </div>
-          <span class="trace-arrow">→</span>
-          <div class="trace-node equip">
-            <div style="font-size:11px;color:#6a6358">Equipo</div>
-            <div class="uid">${esc(e.uid)}</div>
-          </div>`;
-      }
-
-      if (entrega) {
-        html += `
-          <span class="trace-arrow">→</span>
-          <div class="trace-node recip">
-            <div style="font-size:11px;color:#6a6358">Entregado a</div>
-            <div>${esc(entrega.institucion)}</div>
-            <div style="font-size:11px;color:#9a9285">${esc(entrega.fecha)}</div>
-          </div>`;
-      } else {
-        html += `
-          <span class="trace-arrow">→</span>
-          <div class="trace-node" style="border-left:3px solid #d4ccba;color:#6a6358">
-            En inventario
-          </div>`;
-      }
-
-      html += `</div>`;
-
-      if (e.descripcion) {
-        html += `<div class="trace-detail">${esc(e.descripcion)}</div>`;
-      }
-      if (entrega && entrega.notas) {
-        html += `<div class="trace-detail">Entrega: ${esc(entrega.notas)}</div>`;
-      }
-
-      html += `</div>`;
-      container.innerHTML += html;
-    }
-  }
-
-  // ============================================================
-  // EDIT / DELETE (modal)
-  // ============================================================
-  let modalState = null; // { type, key, uid }
-
-  function openModal(type, key) {
-    const arr = collectionArr(type);
-    const item = arr.find(i => (i._key || i.uid) === key);
-    if (!item) return;
-    modalState = { type, key, uid: item.uid || item.nombre };
-
-    const titleEl = document.getElementById('modal-title');
-    const uidEl = document.getElementById('modal-uid');
-    const body = document.getElementById('modal-body');
-
-    if (type === 'equipos') {
-      titleEl.textContent = 'Editar equipo';
-      uidEl.textContent = item.uid + (item.esEnsamblado ? ' (ensamblado)' : '');
-      const tipos = ['Notebook','PC de escritorio','Monitor','Teclado','Mouse','Impresora','Componente','Otro'];
-      const donantesOpts = donantes.map(d => `<option value="${esc(d.nombre)}" ${d.nombre === item.donante ? 'selected' : ''}>${esc(d.nombre)}</option>`).join('');
-      body.innerHTML = `
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tipo</label>
-            <select id="m-tipo">${tipos.map(t => `<option value="${t}" ${t === item.tipo ? 'selected' : ''}>${t}</option>`).join('')}</select>
-          </div>
-          <div class="form-group">
-            <label>Marca / Modelo</label>
-            <input type="text" id="m-marca" value="${esc(item.marca || '')}">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Donante</label>
-            <select id="m-donante"><option value="">— Seleccionar —</option>${donantesOpts}</select>
-          </div>
-          <div class="form-group">
-            <label>Fecha de ingreso</label>
-            <input type="date" id="m-fecha" value="${esc(item.fecha || '')}">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Descripción / Estado</label>
-            <textarea id="m-desc">${esc(item.descripcion || '')}</textarea>
-          </div>
-        </div>
-      `;
-      if (item.esEnsamblado) {
-        const donFlat = (item.donante || '');
-        document.getElementById('m-donante').innerHTML = `<option value="${esc(donFlat)}" selected>${esc(donFlat)} (ensamblado)</option>`;
-        document.getElementById('m-donante').disabled = true;
-      }
-    } else if (type === 'donantes') {
-      titleEl.textContent = 'Editar donante';
-      uidEl.textContent = item.nombre;
-      body.innerHTML = `
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" id="m-nombre" value="${esc(item.nombre || '')}">
-          </div>
-          <div class="form-group">
-            <label>Contacto</label>
-            <input type="text" id="m-contacto" value="${esc(item.contacto || '')}">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Notas</label>
-            <input type="text" id="m-notas" value="${esc(item.notas || '')}">
-          </div>
-        </div>
-      `;
-    } else if (type === 'instituciones') {
-      titleEl.textContent = 'Editar institución';
-      uidEl.textContent = item.nombre;
-      const tipos = ['Escuela','ONG','Comedor','Biblioteca','Centro comunitario','Otro'];
-      body.innerHTML = `
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" id="m-nombre" value="${esc(item.nombre || '')}">
-          </div>
-          <div class="form-group">
-            <label>Tipo</label>
-            <select id="m-tipo">${tipos.map(t => `<option value="${t}" ${t === item.tipo ? 'selected' : ''}>${t}</option>`).join('')}</select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Ubicación</label>
-            <input type="text" id="m-ubicacion" value="${esc(item.ubicacion || '')}">
-          </div>
-          <div class="form-group">
-            <label>Contacto</label>
-            <input type="text" id="m-contacto" value="${esc(item.contacto || '')}">
-          </div>
-        </div>
-      `;
-    }
-
-    document.getElementById('edit-modal').classList.add('visible');
-  }
-
-  function closeModal() {
-    document.getElementById('edit-modal').classList.remove('visible');
-    modalState = null;
-  }
-
-  function saveModal() {
-    if (!modalState) return;
-    const { type, key } = modalState;
-    const arr = collectionArr(type);
-    const item = arr.find(i => (i._key || i.uid) === key);
-    if (!item) return;
-
-    if (type === 'equipos') {
-      const updates = {
-        tipo: document.getElementById('m-tipo').value,
-        marca: document.getElementById('m-marca').value.trim(),
-        fecha: document.getElementById('m-fecha').value,
-        descripcion: document.getElementById('m-desc').value.trim()
-      };
-      if (!item.esEnsamblado) {
-        updates.donante = document.getElementById('m-donante').value;
-      }
-      updateData('equipos', key, updates);
-      toast('Equipo actualizado: ' + item.uid);
-    } else if (type === 'donantes') {
-      const nuevoNombre = document.getElementById('m-nombre').value.trim();
-      if (!nuevoNombre) return toast('El nombre no puede estar vacío', true);
-      const oldNombre = item.nombre;
-      const updates = {
-        nombre: nuevoNombre,
-        contacto: document.getElementById('m-contacto').value.trim(),
-        notas: document.getElementById('m-notas').value.trim()
-      };
-      updateData('donantes', key, updates);
-      // Propagate rename to equipos
-      if (nuevoNombre !== oldNombre) {
-        for (const eq of equipos) {
-          if (eq.donante === oldNombre) {
-            updateData('equipos', eq._key || eq.uid, { donante: nuevoNombre });
-          }
-        }
-      }
-      toast('Donante actualizado');
-    } else if (type === 'instituciones') {
-      const nuevoNombre = document.getElementById('m-nombre').value.trim();
-      if (!nuevoNombre) return toast('El nombre no puede estar vacío', true);
-      const oldNombre = item.nombre;
-      const updates = {
-        nombre: nuevoNombre,
-        tipo: document.getElementById('m-tipo').value,
-        ubicacion: document.getElementById('m-ubicacion').value.trim(),
-        contacto: document.getElementById('m-contacto').value.trim()
-      };
-      updateData('instituciones', key, updates);
-      // Propagate rename to entregas
-      if (nuevoNombre !== oldNombre) {
-        for (const en of entregas) {
-          if (en.institucion === oldNombre) {
-            updateData('entregas', en._key || en.uid, { institucion: nuevoNombre });
-          }
-        }
-      }
-      toast('Institución actualizada');
-    }
-
-    closeModal();
-  }
-
-  function deleteFromModal() {
-    if (!modalState) return;
-    const { type, key } = modalState;
-    const arr = collectionArr(type);
-    const item = arr.find(i => (i._key || i.uid) === key);
-    if (!item) return;
-
-    let msg = '';
-    if (type === 'equipos') {
-      msg = `¿Eliminar el equipo ${item.uid}?`;
-      if (item.estado === 'entregado') msg += '\n\nATENCIÓN: este equipo ya fue entregado. También se eliminará el registro de la entrega.';
-      if (item.esEnsamblado) msg += '\n\nATENCIÓN: este equipo es un ensamblado. Sus componentes volverán a estar disponibles.';
-      if (item.estado === 'ensamblado') msg += '\n\nATENCIÓN: este equipo está ensamblado en ' + (item.ensambladoEn || 'otro equipo') + '. Eliminarlo dejará al ensamblado incompleto.';
-    } else if (type === 'donantes') {
-      const count = equipos.filter(e => e.donante === item.nombre).length;
-      msg = `¿Eliminar al donante "${item.nombre}"?`;
-      if (count > 0) msg += `\n\nHay ${count} equipo(s) asociados. Sus registros quedarán con el nombre como texto histórico (no se borran).`;
-    } else if (type === 'instituciones') {
-      const count = entregas.filter(e => e.institucion === item.nombre).length;
-      msg = `¿Eliminar la institución "${item.nombre}"?`;
-      if (count > 0) msg += `\n\nHay ${count} entrega(s) asociadas. Los registros de entregas se mantienen con el nombre como texto histórico.`;
-    }
-
-    if (!confirm(msg)) return;
-
-    if (type === 'equipos') {
-      // If delivered, remove the entrega
-      if (item.estado === 'entregado') {
-        const en = entregas.find(e => e.equipoUID === item.uid);
-        if (en) deleteData('entregas', en._key || en.uid);
-      }
-      // If this is an assembled equipment, free its components and remove the ensamblado record
-      if (item.esEnsamblado && item.componentes) {
-        for (const compUID of item.componentes) {
-          const comp = equipos.find(e => e.uid === compUID);
-          if (comp) {
-            updateData('equipos', comp._key || comp.uid, { estado: 'disponible', ensambladoEn: null });
-          }
-        }
-        const ens = ensamblados.find(a => a.uid === item.uid);
-        if (ens) deleteData('ensamblados', ens._key || ens.uid);
-      }
-      deleteData('equipos', key);
-      toast('Equipo eliminado: ' + item.uid);
-    } else if (type === 'donantes') {
-      deleteData('donantes', key);
-      toast('Donante eliminado');
-    } else if (type === 'instituciones') {
-      deleteData('instituciones', key);
-      toast('Institución eliminada');
-    }
-
-    closeModal();
-  }
-
-  // Close modal with Escape
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.getElementById('edit-modal').classList.contains('visible')) {
-      closeModal();
-    }
-  });
-  document.getElementById('edit-modal').addEventListener('click', e => {
-    if (e.target.id === 'edit-modal') closeModal();
-  });
-
-  // ============================================================
-  // HELPERS
-  // ============================================================
-  function esc(str) {
-    if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  function toast(msg, error) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.className = 'toast' + (error ? ' error' : '');
-    setTimeout(() => el.classList.add('visible'), 10);
-    setTimeout(() => el.classList.remove('visible'), 3000);
-  }
-
-  function showNuevoDonante() {
-    document.getElementById('don-nombre').focus();
-  }
-
-  function showNuevaInstitucion() {
-    document.getElementById('inst-nombre').focus();
-  }
-
-  // ============================================================
-  // AUTH
-  // ============================================================
-  function doLogin() {
-    const email = document.getElementById('login-email').value.trim();
-    const pass = document.getElementById('login-pass').value;
-    const errEl = document.getElementById('login-error');
-    const btn = document.getElementById('btn-login');
-
-    if (!email || !pass) { errEl.textContent = 'Ingresá email y contraseña'; return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Ingresando...';
-    errEl.textContent = '';
-
-    if (!firebaseReady) {
-      // No Firebase — skip auth, go straight to app
-      showApp('modo local');
-      btn.disabled = false;
-      btn.textContent = 'Ingresar';
-      return;
-    }
-
-    auth.signInWithEmailAndPassword(email, pass)
-      .then(() => {
-        // onAuthStateChanged will handle the UI
-      })
-      .catch(err => {
-        btn.disabled = false;
-        btn.textContent = 'Ingresar';
-        const msgs = {
-          'auth/user-not-found': 'Usuario no encontrado',
-          'auth/wrong-password': 'Contraseña incorrecta',
-          'auth/invalid-email': 'Email inválido',
-          'auth/too-many-requests': 'Demasiados intentos. Esperá un momento.',
-          'auth/invalid-credential': 'Credenciales inválidas',
-        };
-        errEl.textContent = msgs[err.code] || 'Error: ' + err.message;
-      });
-  }
-
-  function doLogout() {
-    if (firebaseReady) {
-      auth.signOut();
-    } else {
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('app-content').style.display = 'none';
-    }
-  }
-
-  function showApp(email) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app-content').style.display = 'block';
-    document.getElementById('user-email').textContent = email;
-    document.getElementById('eq-fecha').value = new Date().toISOString().split('T')[0];
-    document.getElementById('ent-fecha').value = new Date().toISOString().split('T')[0];
-    document.getElementById('ens-fecha').value = new Date().toISOString().split('T')[0];
-    loadData();
-  }
-
-  function hideApp() {
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('app-content').style.display = 'none';
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-error').textContent = '';
-    document.getElementById('btn-login').disabled = false;
-    document.getElementById('btn-login').textContent = 'Ingresar';
-  }
-
-  // Enter key on login fields
-  document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
-  // ============================================================
-  // INIT
-  // ============================================================
-  if (firebaseReady) {
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        showApp(user.email);
-      } else {
-        hideApp();
-      }
-    });
-  } else {
-    // No Firebase — show login but allow access with any creds (localStorage mode)
-    document.getElementById('login-screen').style.display = 'flex';
+  function setMetric(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = typeof value === 'number' ? value : '0';
   }
 </script>
+
 </body>
 </html>
