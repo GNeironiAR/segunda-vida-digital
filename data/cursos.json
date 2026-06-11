@@ -1,5 +1,5 @@
 {
-  "_instrucciones": "Editá este archivo para agregar/modificar paths y módulos. Cada path es una etapa (tronco, intermedio o carrera). Los módulos van en orden dentro de cada path. Los recursos son links externos (YouTube, MDN, etc.). Cuando termines de armar un path, el usuario puede descargar un certificado.",
+  "_instrucciones": "Editá este archivo para agregar/modificar paths y módulos. Cada path es una etapa (tronco, intermedio, carrera o avanzado). Los módulos van en orden dentro de cada path. Cada módulo busca su contenido en /data/lessons/<path-id>/<module-id>.md — seguí _TEMPLATE.md como guía. Si querés sumar recursos externos opcionales, agregá un array recursos_adicionales en el módulo.",
   "paths": [
     {
       "id": "alfabetizacion",
