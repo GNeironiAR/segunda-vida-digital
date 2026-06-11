@@ -852,19 +852,29 @@
     const mod = (pathData.modulos || []).find(m => m.id === moduleId);
     const titulo = mod ? mod.titulo : moduleId;
 
-    // Build a clean printable wrapper with header/footer
+    // Render the printable copy offscreen with explicit A4 width so
+    // html2canvas captures a clean snapshot at a deterministic size.
     const wrapper = document.createElement('div');
-    wrapper.style.padding = '20mm';
-    wrapper.style.background = '#ffffff';
-    wrapper.style.color = '#2a2620';
-    wrapper.style.fontFamily = "'Segoe UI', system-ui, sans-serif";
+    wrapper.style.cssText = [
+      'position: fixed',
+      'top: 0',
+      'left: -10000px',
+      'width: 210mm',
+      'box-sizing: border-box',
+      'padding: 20mm',
+      'background: #ffffff',
+      'color: #2a2620',
+      "font-family: 'Segoe UI', system-ui, sans-serif",
+      'font-size: 14px',
+      'line-height: 1.6'
+    ].join(';');
     wrapper.innerHTML = `
       <div style="border-bottom:2px solid #7a6a3d;padding-bottom:10px;margin-bottom:20px">
         <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6a6358">Segunda Vida Digital</div>
         <div style="font-size:13px;color:#6a6358;margin-top:4px">${esc(pathData.nombre)}</div>
         <h1 style="font-size:20px;color:#2a2620;margin-top:6px">${esc(titulo)}</h1>
       </div>
-      <div class="lesson-content" style="background:transparent;border:none;padding:0">${lesson.innerHTML}</div>
+      <div class="lesson-content" style="background:transparent;border:none;padding:0;margin:0">${lesson.innerHTML}</div>
       <div style="margin-top:30px;padding-top:10px;border-top:1px solid #e8e2d6;font-size:10px;color:#9a9285;text-align:center">
         segundavidadigital · Proyecto comunitario · Material gratuito para uso educativo
       </div>
@@ -872,18 +882,28 @@
     document.body.appendChild(wrapper);
 
     const safe = (pathData.nombre + ' - ' + titulo).replace(/[^\w\s-áéíóúñÁÉÍÓÚÑ]/g, '').trim();
-    html2pdf().set({
-      margin: 0,
-      filename: safe + '.pdf',
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(wrapper).save().then(() => {
-      document.body.removeChild(wrapper);
-    }).catch(err => {
-      console.error(err);
-      document.body.removeChild(wrapper);
-      alert('No se pudo generar el PDF: ' + err.message);
+
+    // Wait one paint frame so html2canvas snapshots a fully laid-out wrapper.
+    requestAnimationFrame(() => {
+      html2pdf().set({
+        margin: 0,
+        filename: safe + '.pdf',
+        image: { type: 'jpeg', quality: 0.95 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          windowWidth: wrapper.scrollWidth
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'] }
+      }).from(wrapper).save().then(() => {
+        if (wrapper.parentNode) document.body.removeChild(wrapper);
+      }).catch(err => {
+        console.error(err);
+        if (wrapper.parentNode) document.body.removeChild(wrapper);
+        alert('No se pudo generar el PDF: ' + err.message);
+      });
     });
   }
 
