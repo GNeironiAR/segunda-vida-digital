@@ -13,98 +13,37 @@
           "id": "alf-1",
           "titulo": "Partes de una computadora",
           "descripcion": "Conocé los componentes físicos: monitor, CPU, teclado, mouse, parlantes y conexiones.",
-          "duracion": "30 min",
-          "recursos": [
-            {
-              "tipo": "video",
-              "titulo": "Partes de la computadora y sus funciones",
-              "url": "https://www.youtube.com/results?search_query=partes+de+la+computadora+explicacion",
-              "fuente": "YouTube",
-              "nota": "REEMPLAZAR con link directo curado"
-            }
-          ]
+          "duracion": "30 min"
         },
         {
           "id": "alf-2",
           "titulo": "Usar el mouse y el teclado",
           "descripcion": "Movimiento del cursor, clic izquierdo/derecho, doble clic, arrastrar. Teclas básicas, mayúsculas, Enter, espacio, retroceso.",
-          "duracion": "45 min",
-          "recursos": [
-            {
-              "tipo": "video",
-              "titulo": "Cómo usar el mouse — curso básico",
-              "url": "https://www.youtube.com/results?search_query=como+usar+el+mouse+principiantes",
-              "fuente": "YouTube",
-              "nota": "REEMPLAZAR con link directo curado"
-            },
-            {
-              "tipo": "practica",
-              "titulo": "Práctica de tipeo (Typing Club)",
-              "url": "https://www.typingclub.com/",
-              "fuente": "TypingClub",
-              "nota": "Plataforma gratuita para practicar mecanografía"
-            }
-          ]
+          "duracion": "45 min"
         },
         {
           "id": "alf-3",
           "titulo": "Encendido y sistema operativo",
           "descripcion": "Cómo encender y apagar la computadora correctamente. Escritorio, ventanas, menú de inicio en Linux Mint.",
-          "duracion": "30 min",
-          "recursos": [
-            {
-              "tipo": "video",
-              "titulo": "Introducción a Linux Mint para principiantes",
-              "url": "https://www.youtube.com/results?search_query=linux+mint+principiantes+espanol",
-              "fuente": "YouTube",
-              "nota": "REEMPLAZAR con link directo curado"
-            }
-          ]
+          "duracion": "30 min"
         },
         {
           "id": "alf-4",
           "titulo": "Archivos y carpetas",
           "descripcion": "Crear, abrir, copiar y mover archivos. Organizar tu trabajo en carpetas.",
-          "duracion": "45 min",
-          "recursos": [
-            {
-              "tipo": "video",
-              "titulo": "Manejo de archivos y carpetas",
-              "url": "https://www.youtube.com/results?search_query=manejo+de+archivos+y+carpetas+principiantes",
-              "fuente": "YouTube",
-              "nota": "REEMPLAZAR con link directo curado"
-            }
-          ]
+          "duracion": "45 min"
         },
         {
           "id": "alf-5",
           "titulo": "Conectarse a Internet",
           "descripcion": "Qué es Internet, cómo abrir un navegador, buscar información y navegar de forma segura.",
-          "duracion": "1 hora",
-          "recursos": [
-            {
-              "tipo": "video",
-              "titulo": "Qué es Internet y cómo funciona",
-              "url": "https://www.youtube.com/results?search_query=que+es+internet+explicacion+simple",
-              "fuente": "YouTube",
-              "nota": "REEMPLAZAR con link directo curado"
-            }
-          ]
+          "duracion": "1 hora"
         },
         {
           "id": "alf-6",
           "titulo": "Crear una cuenta de email",
           "descripcion": "Tu primer correo: crear una cuenta de Gmail, enviar y recibir mensajes, adjuntar archivos.",
-          "duracion": "1 hora",
-          "recursos": [
-            {
-              "tipo": "video",
-              "titulo": "Cómo crear y usar Gmail",
-              "url": "https://www.youtube.com/results?search_query=como+crear+gmail+paso+a+paso",
-              "fuente": "YouTube",
-              "nota": "REEMPLAZAR con link directo curado"
-            }
-          ]
+          "duracion": "1 hora"
         }
       ]
     },
@@ -121,37 +60,25 @@
           "id": "off-1",
           "titulo": "Procesador de textos (Word / LibreOffice Writer)",
           "descripcion": "Escribir documentos, formato básico, guardar e imprimir.",
-          "duracion": "2 horas",
-          "recursos": [
-            { "tipo": "video", "titulo": "Curso básico de LibreOffice Writer", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
-          ]
+          "duracion": "2 horas"
         },
         {
           "id": "off-2",
           "titulo": "Planilla de cálculo (Excel / LibreOffice Calc)",
           "descripcion": "Tablas, fórmulas básicas, gráficos simples.",
-          "duracion": "3 horas",
-          "recursos": [
-            { "tipo": "video", "titulo": "Curso básico de LibreOffice Calc", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
-          ]
+          "duracion": "3 horas"
         },
         {
           "id": "off-3",
           "titulo": "Presentaciones (PowerPoint / Impress)",
           "descripcion": "Armar una presentación con diapositivas, texto e imágenes.",
-          "duracion": "2 horas",
-          "recursos": [
-            { "tipo": "video", "titulo": "TODO", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
-          ]
+          "duracion": "2 horas"
         },
         {
           "id": "off-4",
           "titulo": "Archivos en la nube (Google Drive)",
           "descripcion": "Subir, compartir y editar archivos online. Trabajar desde cualquier lugar.",
-          "duracion": "1 hora",
-          "recursos": [
-            { "tipo": "video", "titulo": "TODO", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
-          ]
+          "duracion": "1 hora"
         }
       ]
     },
@@ -167,40 +94,25 @@
           "id": "ia-1",
           "titulo": "¿Qué es la inteligencia artificial?",
           "descripcion": "Conceptos básicos: qué es la IA, cómo aprende, qué puede y qué no puede hacer. Diferencias entre IA tradicional, machine learning e IA generativa.",
-          "duracion": "1 hora",
-          "recursos": [
-            { "tipo": "video", "titulo": "Qué es la IA explicado fácil", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
-          ]
+          "duracion": "1 hora"
         },
         {
           "id": "ia-2",
           "titulo": "Asistentes IA (chatbots)",
           "descripcion": "Cómo conversar con ChatGPT, Claude o Gemini. Cómo hacer buenas preguntas (prompts), pedir resúmenes, traducciones, ideas y borradores.",
-          "duracion": "2 horas",
-          "recursos": [
-            { "tipo": "video", "titulo": "Cómo usar ChatGPT para principiantes", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" },
-            { "tipo": "practica", "titulo": "ChatGPT (gratis)", "url": "https://chat.openai.com/", "fuente": "OpenAI", "nota": "Probá conversar con la IA" },
-            { "tipo": "practica", "titulo": "Claude (gratis)", "url": "https://claude.ai/", "fuente": "Anthropic", "nota": "Otro asistente para comparar" }
-          ]
+          "duracion": "2 horas"
         },
         {
           "id": "ia-3",
           "titulo": "IA generativa: imágenes y contenido",
           "descripcion": "Crear imágenes, textos y materiales con IA. Herramientas gratuitas como Bing Image Creator, ideogram, y uso responsable de contenido generado.",
-          "duracion": "2 horas",
-          "recursos": [
-            { "tipo": "video", "titulo": "Generar imágenes con IA", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" },
-            { "tipo": "practica", "titulo": "Bing Image Creator (gratis)", "url": "https://www.bing.com/images/create", "fuente": "Microsoft", "nota": "Generador de imágenes con IA gratuito" }
-          ]
+          "duracion": "2 horas"
         },
         {
           "id": "ia-4",
           "titulo": "Asistentes de código (básico)",
           "descripcion": "Introducción a los asistentes de programación: qué hacen, cuándo conviene usarlos. Primeros pasos con GitHub Copilot o alternativas gratuitas para escribir código simple.",
-          "duracion": "2 horas",
-          "recursos": [
-            { "tipo": "video", "titulo": "Qué es GitHub Copilot", "url": "TODO", "fuente": "YouTube", "nota": "BUSCAR Y CURAR" }
-          ]
+          "duracion": "2 horas"
         }
       ]
     },
@@ -213,9 +125,24 @@
       "requiere": "ia",
       "siguiente": "cloud",
       "modulos": [
-        { "id": "adm-1", "titulo": "Comunicación profesional por email", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
-        { "id": "adm-2", "titulo": "Excel intermedio: tablas dinámicas y filtros", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
-        { "id": "adm-3", "titulo": "Gestión de agenda y calendario", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] }
+        {
+          "id": "adm-1",
+          "titulo": "Comunicación profesional por email",
+          "descripcion": "TODO",
+          "duracion": "1 hora"
+        },
+        {
+          "id": "adm-2",
+          "titulo": "Excel intermedio: tablas dinámicas y filtros",
+          "descripcion": "TODO",
+          "duracion": "3 horas"
+        },
+        {
+          "id": "adm-3",
+          "titulo": "Gestión de agenda y calendario",
+          "descripcion": "TODO",
+          "duracion": "1 hora"
+        }
       ]
     },
     {
@@ -227,9 +154,24 @@
       "requiere": "ia",
       "siguiente": "cloud",
       "modulos": [
-        { "id": "mkt-1", "titulo": "Redes sociales para negocios", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
-        { "id": "mkt-2", "titulo": "Diseño con Canva", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
-        { "id": "mkt-3", "titulo": "Métricas básicas de redes", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] }
+        {
+          "id": "mkt-1",
+          "titulo": "Redes sociales para negocios",
+          "descripcion": "TODO",
+          "duracion": "2 horas"
+        },
+        {
+          "id": "mkt-2",
+          "titulo": "Diseño con Canva",
+          "descripcion": "TODO",
+          "duracion": "2 horas"
+        },
+        {
+          "id": "mkt-3",
+          "titulo": "Métricas básicas de redes",
+          "descripcion": "TODO",
+          "duracion": "1 hora"
+        }
       ]
     },
     {
@@ -241,9 +183,24 @@
       "requiere": "ia",
       "siguiente": "cloud",
       "modulos": [
-        { "id": "dba-1", "titulo": "Qué es una base de datos", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
-        { "id": "dba-2", "titulo": "SQL básico: SELECT, INSERT, UPDATE", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] },
-        { "id": "dba-3", "titulo": "Excel avanzado para datos", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] }
+        {
+          "id": "dba-1",
+          "titulo": "Qué es una base de datos",
+          "descripcion": "TODO",
+          "duracion": "1 hora"
+        },
+        {
+          "id": "dba-2",
+          "titulo": "SQL básico: SELECT, INSERT, UPDATE",
+          "descripcion": "TODO",
+          "duracion": "4 horas"
+        },
+        {
+          "id": "dba-3",
+          "titulo": "Excel avanzado para datos",
+          "descripcion": "TODO",
+          "duracion": "3 horas"
+        }
       ]
     },
     {
@@ -255,9 +212,24 @@
       "requiere": "ia",
       "siguiente": "cloud",
       "modulos": [
-        { "id": "web-1", "titulo": "Introducción a HTML", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
-        { "id": "web-2", "titulo": "CSS: dándole estilo a la página", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
-        { "id": "web-3", "titulo": "Publicar un sitio gratis con Netlify o GitHub Pages", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] }
+        {
+          "id": "web-1",
+          "titulo": "Introducción a HTML",
+          "descripcion": "TODO",
+          "duracion": "3 horas"
+        },
+        {
+          "id": "web-2",
+          "titulo": "CSS: dándole estilo a la página",
+          "descripcion": "TODO",
+          "duracion": "3 horas"
+        },
+        {
+          "id": "web-3",
+          "titulo": "Publicar un sitio gratis con Netlify o GitHub Pages",
+          "descripcion": "TODO",
+          "duracion": "2 horas"
+        }
       ]
     },
     {
@@ -269,12 +241,42 @@
       "requiere": "ia",
       "siguiente": "cloud",
       "modulos": [
-        { "id": "py-1", "titulo": "Qué es programar y por qué Python", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
-        { "id": "py-2", "titulo": "Instalación y primer programa", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
-        { "id": "py-3", "titulo": "Variables, tipos y operaciones", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
-        { "id": "py-4", "titulo": "Condicionales y bucles", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
-        { "id": "py-5", "titulo": "Funciones y estructuras de datos", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] },
-        { "id": "py-6", "titulo": "Mini proyecto: calculadora o juego simple", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] }
+        {
+          "id": "py-1",
+          "titulo": "Qué es programar y por qué Python",
+          "descripcion": "TODO",
+          "duracion": "1 hora"
+        },
+        {
+          "id": "py-2",
+          "titulo": "Instalación y primer programa",
+          "descripcion": "TODO",
+          "duracion": "2 horas"
+        },
+        {
+          "id": "py-3",
+          "titulo": "Variables, tipos y operaciones",
+          "descripcion": "TODO",
+          "duracion": "3 horas"
+        },
+        {
+          "id": "py-4",
+          "titulo": "Condicionales y bucles",
+          "descripcion": "TODO",
+          "duracion": "3 horas"
+        },
+        {
+          "id": "py-5",
+          "titulo": "Funciones y estructuras de datos",
+          "descripcion": "TODO",
+          "duracion": "4 horas"
+        },
+        {
+          "id": "py-6",
+          "titulo": "Mini proyecto: calculadora o juego simple",
+          "descripcion": "TODO",
+          "duracion": "4 horas"
+        }
       ]
     },
     {
@@ -284,10 +286,30 @@
       "descripcion": "Conceptos esenciales de cloud computing aplicados a cualquier carrera: qué es la nube, principales proveedores, servicios básicos, seguridad y cómo se integra con tu especialidad.",
       "color": "#5a8aa8",
       "modulos": [
-        { "id": "cld-1", "titulo": "Qué es la nube y para qué sirve", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
-        { "id": "cld-2", "titulo": "Principales proveedores (AWS, Azure, GCP)", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
-        { "id": "cld-3", "titulo": "Servicios básicos: almacenamiento, cómputo y bases de datos", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
-        { "id": "cld-4", "titulo": "Seguridad y costos en la nube", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] }
+        {
+          "id": "cld-1",
+          "titulo": "Qué es la nube y para qué sirve",
+          "descripcion": "TODO",
+          "duracion": "1 hora"
+        },
+        {
+          "id": "cld-2",
+          "titulo": "Principales proveedores (AWS, Azure, GCP)",
+          "descripcion": "TODO",
+          "duracion": "2 horas"
+        },
+        {
+          "id": "cld-3",
+          "titulo": "Servicios básicos: almacenamiento, cómputo y bases de datos",
+          "descripcion": "TODO",
+          "duracion": "3 horas"
+        },
+        {
+          "id": "cld-4",
+          "titulo": "Seguridad y costos en la nube",
+          "descripcion": "TODO",
+          "duracion": "2 horas"
+        }
       ]
     }
   ]

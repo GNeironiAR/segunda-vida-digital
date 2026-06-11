@@ -9,6 +9,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script src="./js/progress.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -329,6 +331,124 @@
       font-style: italic;
     }
 
+    /* --- Lesson content (Markdown rendered) --- */
+    .lesson-content {
+      background: #faf7f2;
+      border: 1px solid #e8e2d6;
+      border-radius: 8px;
+      padding: 22px 26px;
+      margin: 4px 0 18px;
+      color: #2a2620;
+      line-height: 1.7;
+    }
+
+    .lesson-content h1,
+    .lesson-content h2,
+    .lesson-content h3 {
+      color: #2a2620;
+      letter-spacing: 0.02em;
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+
+    .lesson-content h1 { font-size: 1.4rem; font-weight: 600; }
+    .lesson-content h2 { font-size: 1.15rem; font-weight: 600; color: #7a6a3d; }
+    .lesson-content h3 { font-size: 1rem; font-weight: 600; }
+    .lesson-content h1:first-child,
+    .lesson-content h2:first-child { margin-top: 0; }
+
+    .lesson-content p { margin: 0 0 12px; font-size: 15px; }
+
+    .lesson-content ul,
+    .lesson-content ol {
+      margin: 0 0 14px 22px;
+      font-size: 15px;
+    }
+
+    .lesson-content li { margin-bottom: 6px; }
+
+    .lesson-content strong { color: #2a2620; }
+
+    .lesson-content a { color: #7a6a3d; }
+
+    .lesson-content blockquote {
+      margin: 14px 0;
+      padding: 12px 16px;
+      background: #fef5e6;
+      border-left: 4px solid #d4c08a;
+      border-radius: 4px;
+      color: #6a5520;
+      font-size: 14px;
+    }
+
+    .lesson-content blockquote p:last-child { margin-bottom: 0; }
+
+    .lesson-content code {
+      background: #f2ede2;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.92em;
+      color: #7a4a80;
+    }
+
+    .lesson-content pre {
+      background: #2a2620;
+      color: #faf7f2;
+      padding: 14px 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 14px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .lesson-content pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .lesson-content img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+
+    .lesson-content table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+
+    .lesson-content th,
+    .lesson-content td {
+      padding: 8px 12px;
+      border: 1px solid #e8e2d6;
+      text-align: left;
+    }
+
+    .lesson-content th { background: #f2ede2; }
+
+    .lesson-loading {
+      color: #6a6358;
+      font-size: 13px;
+      font-style: italic;
+      padding: 10px 0;
+    }
+
+    .lesson-missing {
+      color: #6a6358;
+      font-size: 13px;
+      padding: 14px 16px;
+      background: #faf7f2;
+      border: 1px dashed #d4ccba;
+      border-radius: 8px;
+      margin: 4px 0 18px;
+      font-style: italic;
+    }
+
     .module-actions {
       margin-top: 16px;
       display: flex;
@@ -358,6 +478,22 @@
     .btn-primary:hover {
       background: #3a5a2a;
       border-color: #3a5a2a;
+    }
+
+    .btn-pdf {
+      background: #ffffff;
+      border-color: #7a6a3d;
+      color: #7a6a3d;
+    }
+
+    .btn-pdf:hover:not(:disabled) {
+      background: #7a6a3d;
+      color: #ffffff;
+    }
+
+    .btn-pdf:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .btn-link {
@@ -632,17 +768,23 @@
     container.innerHTML = '<h2>Módulos</h2>' + mods.map((m, i) => renderModule(m, i)).join('');
     container.querySelectorAll('.module-head').forEach(el => {
       el.addEventListener('click', () => {
-        el.closest('.module').classList.toggle('open');
+        const mod = el.closest('.module');
+        const wasOpen = mod.classList.contains('open');
+        mod.classList.toggle('open');
+        if (!wasOpen) loadLessonInto(mod);
       });
     });
   }
 
   function renderModule(m, i) {
     const done = isCompleted(m.id);
-    const recursos = (m.recursos || []).map(r => renderResource(r)).join('') ||
-      '<p style="font-size:13px;color:#9a9285;font-style:italic">Recursos próximamente.</p>';
+    const adicionales = (m.recursos_adicionales || m.recursos || []);
+    const adicionalesHtml = adicionales.length ? `
+      <div class="resources-label">Para profundizar</div>
+      ${adicionales.map(r => renderResource(r)).join('')}
+    ` : '';
     return `
-      <div class="module ${done ? 'completed' : ''}" id="mod-${esc(m.id)}">
+      <div class="module ${done ? 'completed' : ''}" id="mod-${esc(m.id)}" data-module-id="${esc(m.id)}">
         <div class="module-head">
           <div class="module-num">${done ? '✓' : (i + 1)}</div>
           <div class="module-title">${esc(m.titulo)}</div>
@@ -651,16 +793,98 @@
         </div>
         <div class="module-body">
           <p class="module-desc">${esc(m.descripcion || '')}</p>
-          <div class="resources-label">Recursos</div>
-          ${recursos}
+          <div class="lesson-container"></div>
+          ${adicionalesHtml}
           <div class="module-actions">
             <button class="btn ${done ? '' : 'btn-primary'}" onclick="toggleCompleted('${esc(m.id)}')">
               ${done ? '✓ Completado · marcar como pendiente' : 'Marcar como completado'}
+            </button>
+            <button class="btn btn-pdf" data-module-id="${esc(m.id)}" disabled title="Disponible cuando carga la lección">
+              Descargar PDF
             </button>
           </div>
         </div>
       </div>
     `;
+  }
+
+  // Lazy-load the markdown lesson for a module the first time it's opened.
+  const _lessonCache = {};
+  async function loadLessonInto(moduleEl) {
+    const moduleId = moduleEl.getAttribute('data-module-id');
+    const container = moduleEl.querySelector('.lesson-container');
+    if (container.dataset.loaded === 'true') return;
+    container.dataset.loaded = 'true';
+    container.innerHTML = '<div class="lesson-loading">Cargando lección...</div>';
+
+    try {
+      const md = await fetchLesson(moduleId);
+      if (!md) {
+        container.innerHTML = '<div class="lesson-missing">📝 Esta lección todavía no tiene contenido propio. Mientras tanto, revisá los recursos para profundizar abajo.</div>';
+        return;
+      }
+      const html = marked.parse(md);
+      container.innerHTML = `<div class="lesson-content">${html}</div>`;
+      const btn = moduleEl.querySelector('.btn-pdf');
+      if (btn) {
+        btn.disabled = false;
+        btn.removeAttribute('title');
+        btn.onclick = () => downloadLessonPDF(moduleEl, moduleId);
+      }
+    } catch (err) {
+      container.innerHTML = '<div class="lesson-missing">Error cargando la lección: ' + esc(err.message) + '</div>';
+    }
+  }
+
+  async function fetchLesson(moduleId) {
+    if (_lessonCache[moduleId] !== undefined) return _lessonCache[moduleId];
+    const url = './data/lessons/' + encodeURIComponent(pathData.id) + '/' + encodeURIComponent(moduleId) + '.md';
+    const res = await fetch(url);
+    if (!res.ok) { _lessonCache[moduleId] = null; return null; }
+    const txt = await res.text();
+    _lessonCache[moduleId] = txt;
+    return txt;
+  }
+
+  function downloadLessonPDF(moduleEl, moduleId) {
+    const lesson = moduleEl.querySelector('.lesson-content');
+    if (!lesson) return;
+    const mod = (pathData.modulos || []).find(m => m.id === moduleId);
+    const titulo = mod ? mod.titulo : moduleId;
+
+    // Build a clean printable wrapper with header/footer
+    const wrapper = document.createElement('div');
+    wrapper.style.padding = '20mm';
+    wrapper.style.background = '#ffffff';
+    wrapper.style.color = '#2a2620';
+    wrapper.style.fontFamily = "'Segoe UI', system-ui, sans-serif";
+    wrapper.innerHTML = `
+      <div style="border-bottom:2px solid #7a6a3d;padding-bottom:10px;margin-bottom:20px">
+        <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6a6358">Segunda Vida Digital</div>
+        <div style="font-size:13px;color:#6a6358;margin-top:4px">${esc(pathData.nombre)}</div>
+        <h1 style="font-size:20px;color:#2a2620;margin-top:6px">${esc(titulo)}</h1>
+      </div>
+      <div class="lesson-content" style="background:transparent;border:none;padding:0">${lesson.innerHTML}</div>
+      <div style="margin-top:30px;padding-top:10px;border-top:1px solid #e8e2d6;font-size:10px;color:#9a9285;text-align:center">
+        segundavidadigital · Proyecto comunitario · Material gratuito para uso educativo
+      </div>
+    `;
+    document.body.appendChild(wrapper);
+
+    const safe = (pathData.nombre + ' - ' + titulo).replace(/[^\w\s-áéíóúñÁÉÍÓÚÑ]/g, '').trim();
+    html2pdf().set({
+      margin: 0,
+      filename: safe + '.pdf',
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(wrapper).save().then(() => {
+      document.body.removeChild(wrapper);
+    }).catch(err => {
+      console.error(err);
+      document.body.removeChild(wrapper);
+      alert('No se pudo generar el PDF: ' + err.message);
+    });
   }
 
   function renderResource(r) {
