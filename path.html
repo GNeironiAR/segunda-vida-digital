@@ -467,6 +467,43 @@
       border-color: #7a6a3d;
     }
 
+    .next-path .branches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .next-path .branch-card {
+      display: block;
+      padding: 14px 16px;
+      background: #faf7f2;
+      border: 1px solid #e8e2d6;
+      border-left: 4px solid #7a6a3d;
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+
+    .next-path .branch-card:hover {
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(42, 38, 32, 0.06);
+    }
+
+    .next-path .branch-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2a2620;
+      margin-bottom: 4px;
+    }
+
+    .next-path .branch-desc {
+      font-size: 12px;
+      color: #6a6358;
+    }
+
     /* --- Footer --- */
     footer {
       padding: 32px 0;
@@ -667,17 +704,59 @@
 
   function renderNextPath() {
     const section = document.getElementById('next-path-section');
-    if (!pathData.siguiente) { section.innerHTML = ''; return; }
-    const next = allPaths.find(p => p.id === pathData.siguiente);
-    if (!next) { section.innerHTML = ''; return; }
-    section.innerHTML = `
-      <div class="next-path" style="border-left-color:${next.color || '#7a6a3d'}">
-        <div class="label">Próximo camino</div>
-        <div class="name">${esc(next.nombre)}</div>
-        <div class="desc">${esc(next.descripcion || '')}</div>
-        <a href="./path.html?id=${encodeURIComponent(next.id)}">Ver módulos →</a>
-      </div>
-    `;
+
+    // Case 1: explicit single next path
+    if (pathData.siguiente) {
+      const next = allPaths.find(p => p.id === pathData.siguiente);
+      if (next) {
+        section.innerHTML = `
+          <div class="next-path" style="border-left-color:${next.color || '#7a6a3d'}">
+            <div class="label">Próximo camino</div>
+            <div class="name">${esc(next.nombre)}</div>
+            <div class="desc">${esc(next.descripcion || '')}</div>
+            <a href="./path.html?id=${encodeURIComponent(next.id)}">Ver módulos →</a>
+          </div>
+        `;
+        return;
+      }
+    }
+
+    // Case 2: no explicit next, but other paths require this one — show branches
+    const branches = allPaths.filter(p => p.requiere === pathData.id);
+    if (branches.length > 1) {
+      section.innerHTML = `
+        <div class="next-path" style="border-left-color:#7a6a3d">
+          <div class="label">Elegí tu camino</div>
+          <div class="name">¿Qué te interesa más?</div>
+          <div class="desc">Con lo que aprendiste hasta acá ya podés elegir una especialidad. Cada camino te abre una puerta distinta.</div>
+          <div class="branches">
+            ${branches.map(b => `
+              <a class="branch-card" href="./path.html?id=${encodeURIComponent(b.id)}" style="border-left-color:${b.color || '#7a6a3d'}">
+                <div class="branch-name">${esc(b.nombre)}</div>
+                <div class="branch-desc">${esc(b.descripcion || '')}</div>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // Case 3: single implicit next
+    if (branches.length === 1) {
+      const next = branches[0];
+      section.innerHTML = `
+        <div class="next-path" style="border-left-color:${next.color || '#7a6a3d'}">
+          <div class="label">Próximo camino</div>
+          <div class="name">${esc(next.nombre)}</div>
+          <div class="desc">${esc(next.descripcion || '')}</div>
+          <a href="./path.html?id=${encodeURIComponent(next.id)}">Ver módulos →</a>
+        </div>
+      `;
+      return;
+    }
+
+    section.innerHTML = '';
   }
 
   function generateCertificate() {

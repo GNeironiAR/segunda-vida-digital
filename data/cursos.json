@@ -211,6 +211,7 @@
       "descripcion": "Competencias para trabajos de oficina: comunicación profesional por email, manejo de agenda, planillas para inventarios y cuentas.",
       "color": "#7a6a3d",
       "requiere": "ia",
+      "siguiente": "cloud",
       "modulos": [
         { "id": "adm-1", "titulo": "Comunicación profesional por email", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
         { "id": "adm-2", "titulo": "Excel intermedio: tablas dinámicas y filtros", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
@@ -222,8 +223,9 @@
       "nivel": "carrera",
       "nombre": "Marketing digital",
       "descripcion": "Bases para promocionar en redes sociales: creación de contenido, manejo de Instagram/Facebook, métricas básicas, diseño con Canva.",
-      "color": "#a85a3a",
+      "color": "#c4783a",
       "requiere": "ia",
+      "siguiente": "cloud",
       "modulos": [
         { "id": "mkt-1", "titulo": "Redes sociales para negocios", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
         { "id": "mkt-2", "titulo": "Diseño con Canva", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
@@ -237,6 +239,7 @@
       "descripcion": "Iniciación a bases de datos: conceptos básicos, SQL elemental, manejo de planillas grandes con datos.",
       "color": "#4a4880",
       "requiere": "ia",
+      "siguiente": "cloud",
       "modulos": [
         { "id": "dba-1", "titulo": "Qué es una base de datos", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
         { "id": "dba-2", "titulo": "SQL básico: SELECT, INSERT, UPDATE", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] },
@@ -248,12 +251,43 @@
       "nivel": "carrera",
       "nombre": "Diseño web",
       "descripcion": "Cómo armar un sitio web simple: HTML, CSS y publicación. Edición de imágenes para web.",
-      "color": "#4a7a3a",
+      "color": "#3aa885",
       "requiere": "ia",
+      "siguiente": "cloud",
       "modulos": [
         { "id": "web-1", "titulo": "Introducción a HTML", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
         { "id": "web-2", "titulo": "CSS: dándole estilo a la página", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
         { "id": "web-3", "titulo": "Publicar un sitio gratis con Netlify o GitHub Pages", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] }
+      ]
+    },
+    {
+      "id": "python",
+      "nivel": "carrera",
+      "nombre": "Desarrollador Python inicial",
+      "descripcion": "Primeros pasos en programación con Python: sintaxis básica, estructuras de datos, lógica y un mini proyecto final.",
+      "color": "#3a7a8a",
+      "requiere": "ia",
+      "siguiente": "cloud",
+      "modulos": [
+        { "id": "py-1", "titulo": "Qué es programar y por qué Python", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
+        { "id": "py-2", "titulo": "Instalación y primer programa", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
+        { "id": "py-3", "titulo": "Variables, tipos y operaciones", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
+        { "id": "py-4", "titulo": "Condicionales y bucles", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
+        { "id": "py-5", "titulo": "Funciones y estructuras de datos", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] },
+        { "id": "py-6", "titulo": "Mini proyecto: calculadora o juego simple", "descripcion": "TODO", "duracion": "4 horas", "recursos": [] }
+      ]
+    },
+    {
+      "id": "cloud",
+      "nivel": "avanzado",
+      "nombre": "Informática en la nube",
+      "descripcion": "Conceptos esenciales de cloud computing aplicados a cualquier carrera: qué es la nube, principales proveedores, servicios básicos, seguridad y cómo se integra con tu especialidad.",
+      "color": "#5a8aa8",
+      "modulos": [
+        { "id": "cld-1", "titulo": "Qué es la nube y para qué sirve", "descripcion": "TODO", "duracion": "1 hora", "recursos": [] },
+        { "id": "cld-2", "titulo": "Principales proveedores (AWS, Azure, GCP)", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] },
+        { "id": "cld-3", "titulo": "Servicios básicos: almacenamiento, cómputo y bases de datos", "descripcion": "TODO", "duracion": "3 horas", "recursos": [] },
+        { "id": "cld-4", "titulo": "Seguridad y costos en la nube", "descripcion": "TODO", "duracion": "2 horas", "recursos": [] }
       ]
     }
   ]

@@ -315,6 +315,7 @@
     const tronco = data.paths.find(p => p.nivel === 'tronco');
     const intermedios = orderIntermedios(data.paths.filter(p => p.nivel === 'intermedio'), tronco);
     const carreras = data.paths.filter(p => p.nivel === 'carrera');
+    const avanzados = data.paths.filter(p => p.nivel === 'avanzado');
 
     const tree = document.getElementById('tree-content');
     let html = '';
@@ -331,13 +332,17 @@
     if (carreras.length) {
       html += `
         <div class="careers-header">
-          <div class="stage-label">Elegí un camino de carrera</div>
+          <div class="stage-label">Elegí una especialidad</div>
         </div>
         <div class="careers-grid">
           ${carreras.map(c => renderCard(c)).join('')}
         </div>
       `;
+      if (avanzados.length) html += `<div class="connector"></div>`;
     }
+    avanzados.forEach(p => {
+      html += renderStage('Etapa avanzada', p);
+    });
 
     tree.innerHTML = html;
   }
