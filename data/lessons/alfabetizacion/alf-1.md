@@ -24,6 +24,8 @@ Toda computadora tiene dos grandes partes:
 
 ## Los componentes físicos
 
+Una PC de escritorio tiene los componentes separados, conectados por cables. Una notebook trae todo integrado en una sola pieza. En ambos casos, las funciones son las mismas. Vamos a verlas una por una.
+
 ### 1. El monitor (o pantalla)
 
 Es donde **ves** lo que hace la computadora. Puede ser plano, de distintos tamaños, y los nuevos son a color. Cuando lo apagás, sigue funcionando la computadora — el monitor solo muestra la imagen.
