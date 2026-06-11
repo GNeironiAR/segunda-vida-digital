@@ -44,6 +44,12 @@
           "titulo": "Crear una cuenta de email",
           "descripcion": "Tu primer correo: crear una cuenta de Gmail, enviar y recibir mensajes, adjuntar archivos.",
           "duracion": "1 hora"
+        },
+        {
+          "id": "alf-7",
+          "titulo": "Uso seguro de redes sociales",
+          "descripcion": "Privacidad, contraseñas seguras y 2FA, reconocer estafas y perfiles falsos, prevención de ciberbullying y grooming, huella digital y salud mental.",
+          "duracion": "1h 30min"
         }
       ]
     },

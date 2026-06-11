@@ -161,4 +161,4 @@ Si querés buscar más sobre estos temas en Google o YouTube, usá estas palabra
 - **Phishing** — estafas que se hacen pasar por entidades reales para robarte datos.
 - **Cerrar sesión** o **logout** — salir de tu cuenta en una PC compartida.
 
-> ✨ **¡Terminaste Alfabetización!** El próximo camino es **Office básico**: aprender a escribir documentos, hacer planillas y armar presentaciones. Te abre la puerta a cualquier trabajo de oficina.
+> ✨ **Próximo paso:** En el último módulo de Alfabetización vas a aprender a **usar redes sociales de forma segura** — privacidad, contraseñas, cómo reconocer estafas, perfiles falsos y proteger tu salud digital.
