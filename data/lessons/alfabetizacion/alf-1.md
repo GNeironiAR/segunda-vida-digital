@@ -79,4 +79,20 @@ Después, contá cuántas entradas **USB** encontrás. Probablemente entre 2 y 4
 - El **procesador** es el cerebro; la **RAM** es memoria temporal; el **disco** guarda todo de forma permanente.
 - Las entradas **USB** te permiten conectar muchísimos dispositivos.
 
+---
+
+## Conceptos clave
+
+Si querés buscar más sobre estos temas en Google o YouTube, usá estas palabras:
+
+- **Hardware** — todo lo físico que podés tocar de la computadora.
+- **Software** — los programas que hacen funcionar al hardware.
+- **CPU** o **Procesador** — el cerebro de la PC; hace los cálculos.
+- **Memoria RAM** — memoria temporal de trabajo (se borra al apagar).
+- **Disco duro** (HDD) o **disco sólido** (SSD) — donde se guardan tus archivos.
+- **Periférico** — cualquier dispositivo que conectás a la PC (mouse, teclado, impresora).
+- **Puerto USB** — la entrada universal para conectar casi todo.
+- **HDMI** — cable para conectar pantallas y proyectores modernos.
+- **Sistema operativo** — el programa principal de la computadora (Linux Mint, Windows).
+
 > ✨ **Próximo paso:** En el módulo siguiente vas a aprender a usar el mouse y el teclado con confianza.
