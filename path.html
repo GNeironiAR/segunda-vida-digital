@@ -10,7 +10,6 @@
   <script src="./js/progress.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -449,6 +448,80 @@
       font-style: italic;
     }
 
+    .print-header {
+      display: none;
+    }
+
+    /* --- Print: hide everything except the active lesson --- */
+    @media print {
+      @page { size: A4; margin: 18mm; }
+      body { background: #ffffff !important; }
+      body * { visibility: hidden !important; }
+      body.printing-lesson .module.print-active,
+      body.printing-lesson .module.print-active * { visibility: visible !important; }
+      body.printing-lesson .module.print-active {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+      }
+      body.printing-lesson .module.print-active .module-head,
+      body.printing-lesson .module.print-active .module-desc,
+      body.printing-lesson .module.print-active .module-actions,
+      body.printing-lesson .module.print-active .resources-label,
+      body.printing-lesson .module.print-active .resource,
+      body.printing-lesson .module.print-active .resource-todo {
+        display: none !important;
+      }
+      body.printing-lesson .module.print-active .module-body {
+        display: block !important;
+        padding: 0 !important;
+        border: none !important;
+      }
+      body.printing-lesson .module.print-active .lesson-content {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #000 !important;
+      }
+      body.printing-lesson .module.print-active .lesson-content h2 { page-break-after: avoid; }
+      body.printing-lesson .module.print-active .lesson-content blockquote,
+      body.printing-lesson .module.print-active .lesson-content pre,
+      body.printing-lesson .module.print-active .lesson-content table { page-break-inside: avoid; }
+      body.printing-lesson .module.print-active .print-header {
+        display: block !important;
+        border-bottom: 2px solid #7a6a3d !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 20px !important;
+      }
+      body.printing-lesson .module.print-active .print-header .brand {
+        font-size: 10px !important;
+        letter-spacing: 0.2em !important;
+        text-transform: uppercase !important;
+        color: #6a6358 !important;
+      }
+      body.printing-lesson .module.print-active .print-header .path-name {
+        font-size: 12px !important;
+        color: #6a6358 !important;
+        margin-top: 4px !important;
+      }
+      body.printing-lesson .module.print-active .print-header h1 {
+        font-size: 18px !important;
+        color: #2a2620 !important;
+        margin: 6px 0 0 !important;
+      }
+    }
+
+    .pdf-tip {
+      font-size: 11px;
+      color: #6a6358;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
     .module-actions {
       margin-top: 16px;
       display: flex;
@@ -800,9 +873,10 @@
               ${done ? '✓ Completado · marcar como pendiente' : 'Marcar como completado'}
             </button>
             <button class="btn btn-pdf" data-module-id="${esc(m.id)}" disabled title="Disponible cuando carga la lección">
-              Descargar PDF
+              📄 Descargar PDF
             </button>
           </div>
+          <div class="pdf-tip">Tip: en el diálogo de impresión, elegí "Guardar como PDF" en Destino.</div>
         </div>
       </div>
     `;
@@ -846,65 +920,53 @@
     return txt;
   }
 
+  // Use the browser's native print engine. Reliable, no external lib,
+  // and the resulting PDF respects fonts/colors faithfully. The user
+  // picks "Guardar como PDF" in their print dialog (default option in
+  // every modern browser).
   function downloadLessonPDF(moduleEl, moduleId) {
-    const lesson = moduleEl.querySelector('.lesson-content');
-    if (!lesson) return;
     const mod = (pathData.modulos || []).find(m => m.id === moduleId);
     const titulo = mod ? mod.titulo : moduleId;
+    const lesson = moduleEl.querySelector('.lesson-content');
+    if (!lesson) return;
 
-    // Render the printable copy offscreen with explicit A4 width so
-    // html2canvas captures a clean snapshot at a deterministic size.
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = [
-      'position: fixed',
-      'top: 0',
-      'left: -10000px',
-      'width: 210mm',
-      'box-sizing: border-box',
-      'padding: 20mm',
-      'background: #ffffff',
-      'color: #2a2620',
-      "font-family: 'Segoe UI', system-ui, sans-serif",
-      'font-size: 14px',
-      'line-height: 1.6'
-    ].join(';');
-    wrapper.innerHTML = `
-      <div style="border-bottom:2px solid #7a6a3d;padding-bottom:10px;margin-bottom:20px">
-        <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6a6358">Segunda Vida Digital</div>
-        <div style="font-size:13px;color:#6a6358;margin-top:4px">${esc(pathData.nombre)}</div>
-        <h1 style="font-size:20px;color:#2a2620;margin-top:6px">${esc(titulo)}</h1>
-      </div>
-      <div class="lesson-content" style="background:transparent;border:none;padding:0;margin:0">${lesson.innerHTML}</div>
-      <div style="margin-top:30px;padding-top:10px;border-top:1px solid #e8e2d6;font-size:10px;color:#9a9285;text-align:center">
-        segundavidadigital · Proyecto comunitario · Material gratuito para uso educativo
-      </div>
-    `;
-    document.body.appendChild(wrapper);
+    // Inject a print-only header at the top of the lesson if not present yet
+    let header = moduleEl.querySelector('.print-header');
+    if (!header) {
+      header = document.createElement('div');
+      header.className = 'print-header';
+      header.innerHTML = `
+        <div class="brand">Segunda Vida Digital</div>
+        <div class="path-name">${esc(pathData.nombre)}</div>
+        <h1>${esc(titulo)}</h1>
+      `;
+      lesson.parentNode.insertBefore(header, lesson);
+    }
 
-    const safe = (pathData.nombre + ' - ' + titulo).replace(/[^\w\s-áéíóúñÁÉÍÓÚÑ]/g, '').trim();
+    // Save current document title so the print dialog uses our title for
+    // the suggested PDF filename ("<path> - <titulo>.pdf").
+    const prevTitle = document.title;
+    document.title = pathData.nombre + ' - ' + titulo;
 
-    // Wait one paint frame so html2canvas snapshots a fully laid-out wrapper.
-    requestAnimationFrame(() => {
-      html2pdf().set({
-        margin: 0,
-        filename: safe + '.pdf',
-        image: { type: 'jpeg', quality: 0.95 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-          windowWidth: wrapper.scrollWidth
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
-      }).from(wrapper).save().then(() => {
-        if (wrapper.parentNode) document.body.removeChild(wrapper);
-      }).catch(err => {
-        console.error(err);
-        if (wrapper.parentNode) document.body.removeChild(wrapper);
-        alert('No se pudo generar el PDF: ' + err.message);
-      });
-    });
+    moduleEl.classList.add('print-active');
+    document.body.classList.add('printing-lesson');
+
+    const cleanup = () => {
+      moduleEl.classList.remove('print-active');
+      document.body.classList.remove('printing-lesson');
+      document.title = prevTitle;
+      window.removeEventListener('afterprint', cleanup);
+    };
+    window.addEventListener('afterprint', cleanup);
+
+    // Some browsers (Safari) don't fire afterprint reliably; fall back
+    // to a timeout cleanup in case the user closed the dialog without
+    // printing.
+    setTimeout(() => {
+      if (document.body.classList.contains('printing-lesson')) cleanup();
+    }, 60000);
+
+    window.print();
   }
 
   function renderResource(r) {
